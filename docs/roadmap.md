@@ -8,7 +8,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 - [x] Lokal Postgres + pgvector (docker-compose)
 - [x] apps/web (boş Next.js), apps/api (/health), apps/worker (iskelet)
 - [x] Prisma + pgvector migration
-- [ ] CI: lint, typecheck, test
+- [x] CI: lint, typecheck, test
 - **Bitti:** `pnpm dev` ile web ve API açılıyor, CI yeşil
 
 ## Faz 1 – Design system
