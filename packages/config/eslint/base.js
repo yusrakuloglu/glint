@@ -21,6 +21,8 @@ export default [
     },
     rules: {
       ...tseslint.configs['strict-type-checked'].rules,
+      // TypeScript already reports undefined identifiers; this rule ignores TS globals
+      'no-undef': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',

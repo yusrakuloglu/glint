@@ -27,7 +27,18 @@ Aynı URL'nin özeti bir kez üretilir, tüm kullanıcılar kullanır. AI maliye
 typescript-eslint 8 ve eslint-plugin-jsx-a11y henüz ESLint 10'u peer olarak desteklemiyor; `@eslint/js` de 9.x'e sabitlendi. ESLint 9 "deprecated" uyarısı veriyor ama flat config ile çalışıyor. Eklentiler ESLint 10 desteği yayınlayınca birlikte yükseltilir.
 Alternatif: ESLint 10 + peer uyarılarını yok saymak (kurallar sessizce bozulabilir) veya jsx-a11y'den vazgeçmek (erişilebilirlik kuralıyla çelişir).
 
-## 007 – NestJS CommonJS kalır, tsconfig preset'leri ayrılır (2026-10-01)
+## 007 – NestJS CommonJS kalır, tsconfig preset'leri ayrılır (2026-10-01) — yerini 008 aldı
 
 api ve worker CommonJS derlenir. Nest ekosistemi (decorator metadata, Prisma, test araçları) CJS'de sorunsuz; ESM'e geçiş kazanç getirmeden sürtünme ekliyor. Modül ayarları ortak `base` preset'inden çıkarılır: ESM tarafı (web, ui, extension) `verbatimModuleSyntax` kullanır, Nest preset'i CommonJS kullanır.
 Alternatif: Nest'i ESM (`NodeNext` + `"type": "module"`) çalıştırmak; import'larda `.js` uzantısı ve bazı kütüphanelerde uyumsuzluk getirir.
+
+## 008 – NestJS 12 + ESM (2026-10-01)
+
+NestJS 12 yalnızca ESM yayınlanıyor; 007'nin "Nest CJS'de sorunsuz" gerekçesi geçersiz kaldı. api ve worker `"type": "module"` ile çalışır, göreli import'lar `.js` uzantılı yazılır, `nest` preset'i de `verbatimModuleSyntax` kullanır. Repo genelinde tek modül sistemi kalır. Ayrı preset'ler (decorator ayarları, `NodeNext`) korunur.
+Alternatif: Nest 11 + CommonJS; olgun ama eski ana sürüm, Nest 12'ye geçişte ESM göçü yine gerekir.
+
+## 009 – Test runner: Vitest (2026-10-01)
+
+Tüm paketlerde tek runner. Nest testleri `unplugin-swc` ile derlenir, çünkü esbuild `emitDecoratorMetadata` desteklemiyor ve Nest DI buna dayanıyor.
+Alternatif: Jest + ts-jest (Nest varsayılanı); frontend tarafıyla iki ayrı runner olurdu.
+`@swc/core`'un kurulum script'ine izin verilir (`onlyBuiltDependencies`): script yalnızca platform binary'sini doğrular; `ignoredBuiltDependencies` pnpm 10.34'te bu paket için uyarıyı susturmadı.

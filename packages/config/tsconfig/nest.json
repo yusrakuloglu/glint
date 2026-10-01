@@ -4,11 +4,12 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
-    // Without "type": "module" in package.json, NodeNext emits CommonJS
-    // while still honoring package "exports" (see docs/decisions.md 007).
+    // NestJS 12 is ESM-only: apps using this preset need "type": "module"
+    // and ".js" extensions on relative imports (see docs/decisions.md 008).
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "outDir": "dist",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
