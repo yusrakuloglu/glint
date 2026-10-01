@@ -20,6 +20,7 @@ Kararların gerekçeleri: `docs/decisions.md`
 ## Komutlar
 
 <!-- Faz 0 sonunda gerçek komutlarla güncelle -->
+
 - `pnpm dev`: tüm uygulamaları başlatır
 - `pnpm lint` / `pnpm typecheck` / `pnpm test`
 - `docker compose up -d`: lokal Postgres + pgvector
@@ -40,6 +41,7 @@ Kararların gerekçeleri: `docs/decisions.md`
 ## Kendim yazacağım parçalar
 
 Bu alanlarda çekirdek mantığı ben yazarım. Sen sadece review yap, test öner, soruya cevap ver; istemediğim sürece kodu kendin yazma:
+
 - Vurgulama motorunun eşleştirme algoritması
 - Hibrit arama SQL'i ve sıralama
 - Pipeline'daki idempotency mantığı

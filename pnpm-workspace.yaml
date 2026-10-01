@@ -1,6 +1,6 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 
 # Yeni yayınlanan sürümleri 1 gün (dakika cinsinden) bekledikten sonra kur
 minimumReleaseAge: 1440
@@ -9,7 +9,7 @@ minimumReleaseAge: 1440
 # Yeni paket script isterse pnpm uyarır: `pnpm approve-builds` ile tek tek onayla.
 onlyBuiltDependencies:
   - prisma
-  - "@prisma/engines"
+  - '@prisma/engines'
   - esbuild
 
 # Kurulum script'i bilerek engellenen paketler (uyarı vermesin diye).
