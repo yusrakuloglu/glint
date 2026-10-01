@@ -11,6 +11,7 @@ onlyBuiltDependencies:
   - prisma
   - '@prisma/engines'
   - esbuild
+  - '@swc/core'
 
 # Kurulum script'i bilerek engellenen paketler (uyarı vermesin diye).
 # unrs-resolver: eslint-plugin-import-x bağımlılığı; script sadece yedek binary indirir.

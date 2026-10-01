@@ -1,0 +1,4 @@
+{
+  "extends": "@glint/config/tsconfig/nest.json",
+  "include": ["src", "vitest.config.ts"]
+}
