@@ -1,1 +1,4 @@
 pnpm-lock.yaml
+
+# Generated code
+apps/api/src/generated/

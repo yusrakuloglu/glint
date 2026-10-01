@@ -47,3 +47,9 @@ Alternatif: Jest + ts-jest (Nest varsayılanı); frontend tarafıyla iki ayrı r
 
 Node sürümü `>=24 <25` olarak sabitlenir (`engines`, `.nvmrc`). Node 23.7'de Nest CLI çöküyordu (`ERR_REQUIRE_CYCLE_MODULE`: `@angular-devkit/schematics` ESM-only `ora`'yı `require` ediyor); Node 24.21'de typecheck, lint, build, test ve `pnpm dev` sorunsuz geçti. 24, güncel LTS hattı.
 Alternatif: Node 22 LTS; o da sorunsuz çalışıyor ama destek süresi daha kısa.
+
+## 011 – Prisma 7 + ESM client, pgvector elle yazılan migration ile (2026-10-01)
+
+`prisma-client` generator'ı ESM üretir (`moduleFormat = "esm"`, `importFileExtension = "js"`); çıktı `apps/api/src/generated/prisma` altında, git'e girmez, turbo `db:generate` ile üretilir. Prisma 7 driver adapter ister: `@prisma/adapter-pg` + `pg`. Prisma 7 `.env` yüklemediği için `prisma.config.ts` kökteki `.env`'i Node'un `process.loadEnvFile` ile okur (dotenv yok). Sürüm 7.10'a sabit: npm'de `prisma`'nın `latest` etiketi 8.0 RC'yi gösteriyor.
+pgvector, `CREATE EXTENSION` içeren elle yazılmış bir migration ile açılır; şemada extension tanımı Prisma 7'de hâlâ deneysel (`experimental.extensions`).
+Alternatif: deneysel extension desteğini açmak; kararlı olana kadar beklenir.

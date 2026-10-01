@@ -5,9 +5,9 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 ## Faz 0 – Kurulum
 
 - [x] Turborepo iskeleti ve packages/config
-- [ ] Lokal Postgres + pgvector (docker-compose)
+- [x] Lokal Postgres + pgvector (docker-compose)
 - [x] apps/web (boş Next.js), apps/api (/health), apps/worker (iskelet)
-- [ ] Prisma + pgvector migration
+- [x] Prisma + pgvector migration
 - [ ] CI: lint, typecheck, test
 - **Bitti:** `pnpm dev` ile web ve API açılıyor, CI yeşil
 
