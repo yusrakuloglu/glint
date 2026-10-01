@@ -19,11 +19,16 @@ Kararların gerekçeleri: `docs/decisions.md`
 
 ## Komutlar
 
-<!-- Faz 0 sonunda gerçek komutlarla güncelle -->
+Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`.
 
-- `pnpm dev`: tüm uygulamaları başlatır
-- `pnpm lint` / `pnpm typecheck` / `pnpm test`
-- `docker compose up -d`: lokal Postgres + pgvector
+- `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır
+- `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build`: turbo ile tüm paketlerde; CI ilk üçünü çalıştırır
+- `pnpm format` / `pnpm format:check`: Prettier
+- `pnpm db:up` / `pnpm db:down`: lokal Postgres + pgvector (docker compose)
+- `pnpm db:migrate`: bekleyen migration'ları uygular (`prisma migrate dev`)
+- `pnpm --filter @glint/api db:migrate --name <ad>`: şema değişikliğinden yeni migration üretir
+- `pnpm db:generate`: Prisma client'ı üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
+- Tek paket: `pnpm --filter @glint/<web|api|worker> <script>`
 
 ## Kurallar
 
