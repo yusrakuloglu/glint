@@ -4,7 +4,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 
 ## Faz 0 – Kurulum
 
-- [ ] Turborepo iskeleti ve packages/config
+- [x] Turborepo iskeleti ve packages/config
 - [ ] Lokal Postgres + pgvector (docker-compose)
 - [ ] apps/web (boş Next.js), apps/api (/health), apps/worker (iskelet)
 - [ ] Prisma + pgvector migration
