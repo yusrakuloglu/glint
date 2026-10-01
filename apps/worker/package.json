@@ -19,7 +19,7 @@
   "devDependencies": {
     "@glint/config": "workspace:*",
     "@nestjs/cli": "^12.0.8",
-    "@types/node": "^22.20.4",
+    "@types/node": "^24.19.0",
     "eslint": "^9.39.5",
     "typescript": "^5.9.3"
   }

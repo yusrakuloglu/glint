@@ -42,3 +42,8 @@ Alternatif: Nest 11 + CommonJS; olgun ama eski ana sürüm, Nest 12'ye geçişte
 Tüm paketlerde tek runner. Nest testleri `unplugin-swc` ile derlenir, çünkü esbuild `emitDecoratorMetadata` desteklemiyor ve Nest DI buna dayanıyor.
 Alternatif: Jest + ts-jest (Nest varsayılanı); frontend tarafıyla iki ayrı runner olurdu.
 `@swc/core`'un kurulum script'ine izin verilir (`onlyBuiltDependencies`): script yalnızca platform binary'sini doğrular; `ignoredBuiltDependencies` pnpm 10.34'te bu paket için uyarıyı susturmadı.
+
+## 010 – Node 24 LTS (2026-10-01)
+
+Node sürümü `>=24 <25` olarak sabitlenir (`engines`, `.nvmrc`). Node 23.7'de Nest CLI çöküyordu (`ERR_REQUIRE_CYCLE_MODULE`: `@angular-devkit/schematics` ESM-only `ora`'yı `require` ediyor); Node 24.21'de typecheck, lint, build, test ve `pnpm dev` sorunsuz geçti. 24, güncel LTS hattı.
+Alternatif: Node 22 LTS; o da sorunsuz çalışıyor ama destek süresi daha kısa.
