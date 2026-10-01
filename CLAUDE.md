@@ -44,6 +44,9 @@ Bu alanlarda çekirdek mantığı ben yazarım. Sen sadece review yap, test öne
 - Hibrit arama SQL'i ve sıralama
 - Pipeline'daki idempotency mantığı
 
-## Mevcut durum
+## Roadmap ve mevcut durum
 
-Faz 0: Kurulum
+Fazlar ve bitti kriterleri: `docs/roadmap.md`. Bir göreve başlamadan önce ilgili fazı oku.
+Bir madde tamamlandığında `docs/roadmap.md`'de işaretle; faz bittiğinde aşağıdaki satırı güncelle.
+
+Aktif faz: Faz 0 – Kurulum

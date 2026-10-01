@@ -1,0 +1,23 @@
+{
+  "name": "glint",
+  "private": true,
+  "packageManager": "pnpm@10.34.6",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:migrate": "turbo db:migrate",
+    "db:generate": "turbo db:generate"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "turbo": "^2.4.4"
+  }
+}
