@@ -4,9 +4,12 @@
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
+    // Without "type": "module" in package.json, NodeNext emits CommonJS
+    // while still honoring package "exports" (see docs/decisions.md 007).
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "outDir": "dist",
+    "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   }

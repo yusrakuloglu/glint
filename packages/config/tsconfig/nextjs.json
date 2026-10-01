@@ -6,6 +6,8 @@
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "allowJs": true,
     "jsx": "preserve",
     "noEmit": true,
