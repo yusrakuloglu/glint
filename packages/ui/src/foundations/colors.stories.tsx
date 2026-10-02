@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 
-const surfaces = ['bg', 'surface', 'surface-raised'] as const
+const surfaces = ['bg', 'surface', 'surface-raised', 'surface-hover'] as const
 
 const textTokens = [
   { name: 'fg', className: 'text-fg' },
@@ -15,6 +15,7 @@ const surfaceClass: Record<(typeof surfaces)[number], string> = {
   bg: 'bg-bg',
   surface: 'bg-surface',
   'surface-raised': 'bg-surface-raised',
+  'surface-hover': 'bg-surface-hover',
 }
 
 const actions = [
@@ -32,7 +33,7 @@ function ColorTokens() {
         <h2 id="text-on-surfaces" className="text-fg text-lg font-semibold">
           Text on surfaces
         </h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-4">
           {surfaces.map((surface) => (
             <div
               key={surface}

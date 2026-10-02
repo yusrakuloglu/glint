@@ -11,25 +11,18 @@ const tokens = parseTokens(readFileSync(new URL('./tokens.css', import.meta.url)
 const TEXT = 4.5
 const NON_TEXT = 3
 
+const surfaces = ['bg', 'surface', 'surface-raised', 'surface-hover']
+const textTokens = ['fg', 'fg-muted', 'primary', 'danger', 'success', 'warning']
+
 const pairs: { fg: string; bg: string; min: number }[] = [
-  { fg: 'fg', bg: 'bg', min: TEXT },
-  { fg: 'fg', bg: 'surface', min: TEXT },
-  { fg: 'fg', bg: 'surface-raised', min: TEXT },
-  { fg: 'fg-muted', bg: 'bg', min: TEXT },
-  { fg: 'fg-muted', bg: 'surface', min: TEXT },
-  { fg: 'fg-muted', bg: 'surface-raised', min: TEXT },
-  { fg: 'primary', bg: 'surface', min: TEXT },
+  // Any text token may appear on any surface (e.g. a danger menu item on hover)
+  ...textTokens.flatMap((fg) => surfaces.map((bg) => ({ fg, bg, min: TEXT }))),
   { fg: 'primary-fg', bg: 'primary', min: TEXT },
   { fg: 'primary-fg', bg: 'primary-hover', min: TEXT },
-  { fg: 'danger', bg: 'surface', min: TEXT },
   { fg: 'danger-fg', bg: 'danger', min: TEXT },
   { fg: 'danger-fg', bg: 'danger-hover', min: TEXT },
-  { fg: 'success', bg: 'surface', min: TEXT },
-  { fg: 'warning', bg: 'surface', min: TEXT },
-  { fg: 'border-input', bg: 'bg', min: NON_TEXT },
-  { fg: 'border-input', bg: 'surface', min: NON_TEXT },
-  { fg: 'ring', bg: 'bg', min: NON_TEXT },
-  { fg: 'ring', bg: 'surface', min: NON_TEXT },
+  ...surfaces.map((bg) => ({ fg: 'border-input', bg, min: NON_TEXT })),
+  ...surfaces.map((bg) => ({ fg: 'ring', bg, min: NON_TEXT })),
 ]
 
 const themes: ThemeName[] = ['light', 'dark']
