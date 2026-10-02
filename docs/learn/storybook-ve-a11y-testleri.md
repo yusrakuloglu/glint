@@ -50,7 +50,7 @@
 - **Açık modal overlay istisnası:** Menü veya dialog açıkken Radix arka planı `aria-hidden` yapıp focus'u kilitliyor; axe bunu `aria-hidden-focus` ihlali sanıyor. Kural yalnızca test sonunda overlay'in açık kaldığı story'lerde kapatılıyor ([a11y.ts](../../packages/ui/src/test-utils/a11y.ts), [015](../decisions.md)). Diğer kuralların hâlâ çalıştığı, açık menüye kontrast ihlali eklenerek doğrulandı.
 - **user-event'in sınırları:** `tab()` shadow root içine girmiyor; F tuşları için `{F8}` yerine `code` gönderen `[F8]` yazılmalı.
 - **Yerel kurulum:** Story testleri için Chromium'un bir kez indirilmesi gerekiyor (`CLAUDE.md` > İlk kurulum).
-- **Yayın:** [storybook.yml](../../.github/workflows/storybook.yml) main'e push'ta GitHub Pages'e yayınlıyor. Ücretsiz planda Pages yalnızca public repolarda çalışıyor; repo private olduğu sürece yayın yapılamaz.
+- **Yayın:** [storybook.yml](../../.github/workflows/storybook.yml) main'e push'ta GitHub Pages'e yayınlıyor: https://yusrakuloglu.github.io/glint/. Ücretsiz planda Pages yalnızca public repolarda çalışıyor ve `github-pages` ortamı yalnızca `main`'den deploy kabul ediyor; branch'ten deneme deploy'u yapılamıyor.
 
 ## Mülakat soruları
 

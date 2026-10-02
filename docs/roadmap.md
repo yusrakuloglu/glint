@@ -16,7 +16,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 - [x] Token'lar, light/dark tema
 - [x] Button, Input, Dialog, Toast, Dropdown, Tooltip, Skeleton, EmptyState
 - [x] Storybook + erişilebilirlik kontrolleri
-- **Bitti:** Storybook yayında, bileşenler klavyeyle tamamen kullanılabiliyor
+- **Bitti:** Storybook yayında, bileşenler klavyeyle tamamen kullanılabiliyor ✓ (2026-10-02, https://yusrakuloglu.github.io/glint/)
 
 ## Faz 2 – Backend temeli
 

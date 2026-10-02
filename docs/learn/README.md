@@ -14,7 +14,7 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | [nestjs-temeli](nestjs-temeli.md)           | Modüller, health endpoint'i, Vitest + SWC         |
 | [prisma-ve-pgvector](prisma-ve-pgvector.md) | Prisma 7 ESM client, pgvector migration'ı         |
 
-## Faz 1 – Design system (devam ediyor)
+## Faz 1 – Design system
 
 | Doküman                                                                   | Konu                                                  |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |

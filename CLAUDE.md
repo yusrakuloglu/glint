@@ -69,4 +69,4 @@ Commit tipi: `docs(learn): ...`
 Fazlar ve bitti kriterleri: `docs/roadmap.md`. Bir göreve başlamadan önce ilgili fazı oku.
 Bir madde tamamlandığında `docs/roadmap.md`'de işaretle; faz bittiğinde aşağıdaki satırı güncelle.
 
-Aktif faz: Faz 1 – Design system
+Aktif faz: Faz 2 – Backend temeli
