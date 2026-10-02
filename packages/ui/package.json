@@ -6,7 +6,8 @@
   "exports": {
     "./styles.css": "./src/styles/index.css",
     "./cn": "./src/lib/cn.ts",
-    "./button": "./src/components/button/index.ts"
+    "./button": "./src/components/button/index.ts",
+    "./input": "./src/components/input/index.ts"
   },
   "scripts": {
     "lint": "eslint .",
