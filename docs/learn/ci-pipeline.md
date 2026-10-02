@@ -23,6 +23,7 @@ Her `main` push'unda ve her pull request'te GitHub Actions lint, typecheck ve te
    - `pnpm/action-setup`: sürümü `packageManager` alanından alır.
    - `setup-node`: sürümü `.nvmrc`'den alır, pnpm store'unu cache'ler.
    - `pnpm install --frozen-lockfile`
+   - `playwright install --only-shell chromium`: story testleri için headless Chromium ([storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md))
    - `lint`, `typecheck`, `test`
 5. **`--frozen-lockfile`:** Lockfile `package.json` ile uyuşmuyorsa kurulum hata verir. CI asla lockfile'ı sessizce güncellemez.
 6. **Turbo'nun rolü:** Her komut turbo üzerinden tüm paketlerde çalışır. `db:generate` bağımlılığı sayesinde Prisma client otomatik üretilir. Veritabanı gerekmez, çünkü `prisma generate` URL istemiyor ([prisma.config.ts](../../apps/api/prisma.config.ts)).
@@ -34,7 +35,7 @@ Her `main` push'unda ve her pull request'te GitHub Actions lint, typecheck ve te
 - `build` ve `format:check` CI'da yok. Derleme hatası veren ama typecheck'ten geçen bir şey (ör. Next'e özgü hata) kaçabilir.
 - Integration testleri için veritabanı servisi henüz yok (Faz 2'de Testcontainers).
 - **Planlananlar:**
-  - Faz 1: Storybook testleri için Playwright Chromium kurulumu, Storybook'un GitHub Pages'e yayını.
+  - Faz 1: Storybook'un GitHub Pages'e yayını.
   - Faz 8: E2E testleri ve Lighthouse CI.
 
 ## Mülakat soruları

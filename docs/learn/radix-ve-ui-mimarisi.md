@@ -46,7 +46,7 @@
 - **Radix'in bakım hızı** son dönemde yavaşladı; uzun vadeli bir risk. İmport kısıtı geçiş maliyetini düşürüyor.
 - **ESLint kuralının açıkları:** Yalnızca statik import'ları yakalıyor. Dinamik `import('radix-ui')` veya başka bir paketin Radix'i re-export etmesi kuralı atlar.
 - **`tailwind-merge` özel utility'ler:** Tanımadığı değerleri tahmin ederek grupluyor; `cn('bg-surface', 'bg-bg')` → `bg-bg` doğru çalışıyor. Ama ileride özel bir boyut veya gölge utility'si eklenirse yanlış gruba düşebilir; o zaman `extendTailwindMerge` ile tanıtılır.
-- **Henüz bileşen yok:** Klavye ve axe testleri Storybook kurulunca gelecek.
+- **Henüz bileşen yok:** Storybook ve axe altyapısı hazır ([storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md)); klavye senaryoları bileşenlerle birlikte gelecek.
 
 ## Mülakat soruları
 
