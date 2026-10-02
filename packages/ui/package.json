@@ -7,7 +7,9 @@
     "./styles.css": "./src/styles/index.css",
     "./cn": "./src/lib/cn.ts",
     "./button": "./src/components/button/index.ts",
-    "./input": "./src/components/input/index.ts"
+    "./input": "./src/components/input/index.ts",
+    "./skeleton": "./src/components/skeleton/index.ts",
+    "./empty-state": "./src/components/empty-state/index.ts"
   },
   "scripts": {
     "lint": "eslint .",
