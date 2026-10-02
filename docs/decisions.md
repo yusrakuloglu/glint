@@ -53,3 +53,24 @@ Alternatif: Node 22 LTS; o da sorunsuz çalışıyor ama destek süresi daha kı
 `prisma-client` generator'ı ESM üretir (`moduleFormat = "esm"`, `importFileExtension = "js"`); çıktı `apps/api/src/generated/prisma` altında, git'e girmez, turbo `db:generate` ile üretilir. Prisma 7 driver adapter ister: `@prisma/adapter-pg` + `pg`. Prisma 7 `.env` yüklemediği için `prisma.config.ts` kökteki `.env`'i Node'un `process.loadEnvFile` ile okur (dotenv yok). Sürüm 7.10'a sabit: npm'de `prisma`'nın `latest` etiketi 8.0 RC'yi gösteriyor.
 pgvector, `CREATE EXTENSION` içeren elle yazılmış bir migration ile açılır; şemada extension tanımı Prisma 7'de hâlâ deneysel (`experimental.extensions`).
 Alternatif: deneysel extension desteğini açmak; kararlı olana kadar beklenir.
+
+## 012 – UI temeli: Radix Primitives, doğrudan import yok (2026-10-02)
+
+Bileşenler `radix-ui` üzerine kurulur. Portal'lar `container` alır (eklentinin Shadow DOM'u için şart); focus trap, klavye gezinmesi ve ARIA bağlantıları hazır gelir; stil içermez. Uygulamalar Radix'i doğrudan import etmez, yalnızca `@glint/ui` kullanır (ESLint `no-restricted-imports`); temel değişirse yalnızca `packages/ui` etkilenir.
+Alternatif: Base UI (modern, aktif; ekosistemi daha küçük), React Aria Components (erişilebilirlikte en titiz; bundle büyük, Tailwind ile sürtünmeli).
+
+## 013 – Token'lar: CSS değişkenleri, `light-dark()`, Tailwind 4 `@theme` (2026-10-02)
+
+Üç katman: OKLCH primitive'ler, `light-dark()` ile yazılan semantic token'lar, `@theme inline` ile Tailwind utility'leri. Tema varsayılan olarak sistem tercihini izler; kökte veya shadow host'ta `data-theme` onu ezer. Varsayılan Tailwind paleti kapatılır, yalnızca token renkleri kullanılabilir. Kontrast, token'lardan WCAG oranı hesaplayan bir testle iki temada doğrulanır.
+Kısıt: Lightning CSS `light-dark()`'ı köke bağlı değişkenlere çevirdiği için iç içe tema desteklenmez.
+Alternatif: Tailwind 3 tarzı JS preset (runtime tema yok, CSS-first yaklaşımın gerisinde), iki ayrı tema bloğu (`[data-theme=dark] { ... }`; her token iki kez yazılır).
+
+## 014 – `@glint/ui` derleme adımı olmadan yayınlanır (2026-10-02)
+
+Paket `exports` ile TS kaynağını doğrudan gösterir (alt yollar: `@glint/ui/button` ...); Next (`transpilePackages`) ve Vite/WXT derlemeyi kendisi yapar. Build, watch ve turbo sıralama derdi olmaz. Barrel dosyası yoktur; alt yollar tree-shaking'i ve `'use client'` sınırlarını net tutar.
+Alternatif: tsup/tsdown ile `dist` üretmek; paket npm'e yayınlanacaksa gerekir, monorepo içinde gereksiz.
+
+## 015 – Story'ler Vitest tarayıcı testleri olarak çalışır (2026-10-02)
+
+Storybook 10 + `@storybook/addon-vitest`: her story headless Chromium'da Vitest testi olur, `play` senaryoları çalışır, axe ihlali testi kırar (`a11y.test: 'error'`). Test runner tek kalır (009). Açık modal overlay'lerde Radix'in arka planı `aria-hidden` yapıp focus'u kilitlemesi axe'ta `aria-hidden-focus` false positive'i üretir; kural yalnızca bu story'lerde kapatılır.
+Alternatif: Storybook test-runner (Jest + Playwright, ikinci runner), jsdom + Testing Library (kontrast ve focus ölçümü güvenilmez).
