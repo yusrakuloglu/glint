@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '../src/styles/index.css';
+
+/* index.css skips stories so apps do not ship story-only classes; Storybook needs them */
+@source '../src/**/*.stories.tsx';

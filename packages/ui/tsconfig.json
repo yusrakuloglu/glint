@@ -1,4 +1,8 @@
 {
   "extends": "@glint/config/tsconfig/react-library.json",
-  "include": ["src", "vitest.config.ts"]
+  "compilerOptions": {
+    // vitest.config.ts imports vite.config.ts with its extension (Vite's native config loader)
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src", ".storybook/**/*", "vite.config.ts", "vitest.config.ts"]
 }

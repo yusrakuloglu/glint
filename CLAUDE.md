@@ -19,7 +19,7 @@ Kararların gerekçeleri: `docs/decisions.md`
 
 ## Komutlar
 
-Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`.
+Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`, `pnpm --filter @glint/ui exec playwright install chromium` (story testleri için).
 
 - `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build`: turbo ile tüm paketlerde; CI ilk üçünü çalıştırır
@@ -28,7 +28,8 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - `pnpm db:migrate`: bekleyen migration'ları uygular (`prisma migrate dev`)
 - `pnpm --filter @glint/api db:migrate --name <ad>`: şema değişikliğinden yeni migration üretir
 - `pnpm db:generate`: Prisma client'ı üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
-- Tek paket: `pnpm --filter @glint/<web|api|worker> <script>`
+- `pnpm --filter @glint/ui storybook` / `build-storybook`: Storybook (:6006) / statik build (`storybook-static/`)
+- Tek paket: `pnpm --filter @glint/<web|api|worker|ui> <script>`
 
 ## Kurallar
 

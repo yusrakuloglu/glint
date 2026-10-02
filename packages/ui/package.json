@@ -10,7 +10,9 @@
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -18,9 +20,29 @@
   },
   "devDependencies": {
     "@glint/config": "workspace:*",
+    "@storybook/addon-a11y": "^10.6.1",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/addon-vitest": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/browser-playwright": "^5.0.3",
     "eslint": "^9.39.5",
+    "eslint-plugin-storybook": "^10.6.1",
+    "playwright": "^1.63.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "storybook": "^10.6.1",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
+    "vite": "^8.3.2",
     "vitest": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }
