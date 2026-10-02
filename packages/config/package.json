@@ -11,7 +11,8 @@
     "./prettier": "./prettier.config.js",
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/nextjs.json": "./tsconfig/nextjs.json",
-    "./tsconfig/nest.json": "./tsconfig/nest.json"
+    "./tsconfig/nest.json": "./tsconfig/nest.json",
+    "./tsconfig/react-library.json": "./tsconfig/react-library.json"
   },
   "dependencies": {
     "@eslint/js": "^9.39.5",
