@@ -16,17 +16,19 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 
 ## Faz 1 – Design system (devam ediyor)
 
-| Doküman                                                     | Konu                                           |
-| ----------------------------------------------------------- | ---------------------------------------------- |
-| [design-tokens](design-tokens.md)                           | Üç katmanlı token'lar, light/dark tema         |
-| [radix-ve-ui-mimarisi](radix-ve-ui-mimarisi.md)             | Neden Radix, `@glint/ui` sınırı, portal yapısı |
-| [contrast-check](contrast-check.md)                         | OKLCH → sRGB dönüşümü, WCAG kontrast testi     |
-| [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md) | Story'ler Vitest testi olarak, axe kontrolleri |
-| [button](button.md)                                         | Varyantlar (cva), `asChild`, loading ve focus  |
+| Doküman                                                                   | Konu                                                  |
+| ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| [design-tokens](design-tokens.md)                                         | Üç katmanlı token'lar, light/dark tema                |
+| [radix-ve-ui-mimarisi](radix-ve-ui-mimarisi.md)                           | Neden Radix, `@glint/ui` sınırı, portal yapısı        |
+| [contrast-check](contrast-check.md)                                       | OKLCH → sRGB dönüşümü, WCAG kontrast testi            |
+| [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md)               | Story'ler Vitest testi olarak, axe kontrolleri        |
+| [button](button.md)                                                       | Varyantlar (cva), `asChild`, loading ve focus         |
+| [form-ve-geri-bildirim-bilesenleri](form-ve-geri-bildirim-bilesenleri.md) | TextField, Skeleton, EmptyState                       |
+| [overlay-bilesenleri](overlay-bilesenleri.md)                             | Tooltip, DropdownMenu, Dialog, Toast, PortalContainer |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
 2. nestjs-temeli ve prisma-ve-pgvector: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
-4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button ...): frontend tarafı.
+4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.

@@ -46,9 +46,11 @@
   - Çözüm: `preview.css`'te story'leri açıkça taramak.
   - **Ders:** Bir testin geçmesi yetmez. Bilerek bir ihlal eklenip testin kırıldığı görülmeli.
 - **axe kontrastı her zaman ölçemez:** Saydam katmanlar, gradient veya arka plan görseli varsa sonucu "incomplete" sayıyor ve ihlal bildirmiyor. Token düzeyindeki [kontrast testi](contrast-check.md) bu boşluğu kapatıyor.
-- **Klavye senaryoları henüz yok:** axe statik bir tarama; Tab sırası, Esc ve focus dönüşü gibi davranışları ancak `play` fonksiyonları test edebilir. Bunlar bileşenlerle birlikte gelecek.
+- **Klavye senaryoları `play` ile:** axe statik bir tarama; Tab sırası, Esc ve focus dönüşü gibi davranışları her bileşenin `play` fonksiyonları test ediyor.
+- **Açık modal overlay istisnası:** Menü veya dialog açıkken Radix arka planı `aria-hidden` yapıp focus'u kilitliyor; axe bunu `aria-hidden-focus` ihlali sanıyor. Kural yalnızca test sonunda overlay'in açık kaldığı story'lerde kapatılıyor ([a11y.ts](../../packages/ui/src/test-utils/a11y.ts), [015](../decisions.md)). Diğer kuralların hâlâ çalıştığı, açık menüye kontrast ihlali eklenerek doğrulandı.
+- **user-event'in sınırları:** `tab()` shadow root içine girmiyor; F tuşları için `{F8}` yerine `code` gönderen `[F8]` yazılmalı.
 - **Yerel kurulum:** Story testleri için Chromium'un bir kez indirilmesi gerekiyor (`CLAUDE.md` > İlk kurulum).
-- **Yayın:** Storybook'un GitHub Pages'e yayınlanması henüz yok (planlandı).
+- **Yayın:** [storybook.yml](../../.github/workflows/storybook.yml) main'e push'ta GitHub Pages'e yayınlıyor. Ücretsiz planda Pages yalnızca public repolarda çalışıyor; repo private olduğu sürece yayın yapılamaz.
 
 ## Mülakat soruları
 

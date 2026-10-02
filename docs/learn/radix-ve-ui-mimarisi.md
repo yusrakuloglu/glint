@@ -36,17 +36,18 @@
    - `clsx` koşullu class'ları birleştiriyor.
    - `tailwind-merge` çakışan utility'lerde sonuncuyu bırakıyor: `cn('px-2', 'px-4')` sonucu `px-4`.
    - Böylece bileşen kendi varsayılan class'larını koyar, tüketici `className` ile güvenle ezer.
-5. **PortalContainer (planlandı):**
-   - Dialog, dropdown, tooltip ve toast içeriği varsayılan olarak `document.body`'ye portal'lanıyor.
+5. **PortalContainer ([portal-container.tsx](../../packages/ui/src/lib/portal-container.tsx)):**
+   - Dialog, dropdown ve tooltip içeriği varsayılan olarak `document.body`'ye portal'lanıyor.
    - Eklentide arayüz bir shadow root içinde olacak; `body`'ye giden içerik shadow root'un stillerini göremez.
-   - Bir `PortalContainerProvider` context'i hedef elemanı tutacak, portal kullanan her bileşen bu hedefi Radix'in `container` prop'una verecek.
+   - `PortalContainerProvider` hedefi context'te tutuyor; `usePortalContainer()` bunu okuyup Radix'in `container` prop'una veriyor. Provider yoksa `undefined` döner ve Radix `body`'yi kullanır.
+   - Bir story, tooltip'in shadow root içinde açıldığını ve `body`'ye hiçbir şey sızmadığını test ediyor. Ayrıntılar: [overlay-bilesenleri](overlay-bilesenleri.md).
 
 ## Sınır durumları ve kısıtlar
 
 - **Radix'in bakım hızı** son dönemde yavaşladı; uzun vadeli bir risk. İmport kısıtı geçiş maliyetini düşürüyor.
 - **ESLint kuralının açıkları:** Yalnızca statik import'ları yakalıyor. Dinamik `import('radix-ui')` veya başka bir paketin Radix'i re-export etmesi kuralı atlar.
 - **`tailwind-merge` özel utility'ler:** Tanımadığı değerleri tahmin ederek grupluyor; `cn('bg-surface', 'bg-bg')` → `bg-bg` doğru çalışıyor. Ama ileride özel bir boyut veya gölge utility'si eklenirse yanlış gruba düşebilir; o zaman `extendTailwindMerge` ile tanıtılır.
-- **Bileşenler ekleniyor:** İlk bileşen [Button](button.md); diğerleri Faz 1 boyunca geliyor. Test altyapısı: [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md).
+- **Bileşen dokümanları:** [button](button.md), [form-ve-geri-bildirim-bilesenleri](form-ve-geri-bildirim-bilesenleri.md), [overlay-bilesenleri](overlay-bilesenleri.md). Test altyapısı: [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md).
 
 ## Mülakat soruları
 
