@@ -34,8 +34,7 @@ const pairs: { fg: string; bg: string; min: number }[] = [
 
 const themes: ThemeName[] = ['light', 'dark']
 
-// TODO(yusra): remove .skip once oklchToSrgb and contrastRatio are implemented
-describe.skip.each(themes)('%s theme contrast', (theme) => {
+describe.each(themes)('%s theme contrast', (theme) => {
   it.each(pairs)('$fg on $bg >= $min:1', ({ fg, bg, min }) => {
     const foreground = tokens.semantic[theme][fg]
     const background = tokens.semantic[theme][bg]
