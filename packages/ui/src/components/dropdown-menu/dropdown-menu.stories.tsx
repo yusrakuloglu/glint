@@ -3,6 +3,7 @@ import { Archive, ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { expect, fn, screen, userEvent, waitFor, within } from 'storybook/test'
 
+import { openModalA11y } from '../../test-utils/a11y'
 import { Button } from '../button/button'
 
 import {
@@ -68,19 +69,10 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-/*
- * While a modal menu is open, Radix sets aria-hidden on everything outside it and traps focus
- * inside the menu. axe still sees the (unreachable) trigger as a focusable element in a hidden
- * region and reports aria-hidden-focus. Disabled only for stories that end with the menu open.
- */
-const openMenuA11y = {
-  a11y: { config: { rules: [{ id: 'aria-hidden-focus', enabled: false }] } },
-}
-
 export const Default: Story = {}
 
 export const Open: Story = {
-  parameters: openMenuA11y,
+  parameters: openModalA11y,
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole('button', { name: 'Actions' }))
     await expect(await screen.findByRole('menu')).toBeVisible()
@@ -142,7 +134,7 @@ export const Typeahead: Story = {
 }
 
 export const CheckboxItem: Story = {
-  parameters: openMenuA11y,
+  parameters: openModalA11y,
   play: async ({ canvasElement }) => {
     const trigger = within(canvasElement).getByRole('button', { name: 'Actions' })
 
