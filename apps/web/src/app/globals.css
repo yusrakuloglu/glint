@@ -1,2 +1,2 @@
 @import 'tailwindcss';
-@config '@glint/config/tailwind/preset';
+@import '@glint/ui/styles.css';
