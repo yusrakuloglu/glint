@@ -13,7 +13,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 
 ## Faz 1 – Design system (2 hafta)
 
-- [ ] Token'lar, light/dark tema
+- [x] Token'lar, light/dark tema
 - [ ] Button, Input, Dialog, Toast, Dropdown, Tooltip, Skeleton, EmptyState
 - [ ] Storybook + erişilebilirlik kontrolleri
 - **Bitti:** Storybook yayında, bileşenler klavyeyle tamamen kullanılabiliyor
