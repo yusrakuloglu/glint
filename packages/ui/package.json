@@ -13,7 +13,8 @@
     "./portal-container": "./src/lib/portal-container.tsx",
     "./tooltip": "./src/components/tooltip/index.ts",
     "./dropdown-menu": "./src/components/dropdown-menu/index.ts",
-    "./dialog": "./src/components/dialog/index.ts"
+    "./dialog": "./src/components/dialog/index.ts",
+    "./toast": "./src/components/toast/index.ts"
   },
   "scripts": {
     "lint": "eslint .",
