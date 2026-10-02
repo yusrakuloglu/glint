@@ -30,6 +30,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Story tests run in Vitest browser mode (headless Chromium)
+      - run: pnpm --filter @glint/ui exec playwright install --with-deps --only-shell chromium
+
       - run: pnpm lint
 
       - run: pnpm typecheck

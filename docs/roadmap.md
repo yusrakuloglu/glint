@@ -11,11 +11,11 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 - [x] CI: lint, typecheck, test
 - **Bitti:** `pnpm dev` ile web ve API açılıyor, CI yeşil
 
-## Faz 1 – Design system
+## Faz 1 – Design system (2 hafta)
 
-- [ ] Token'lar, light/dark tema
-- [ ] Button, Input, Dialog, Toast, Dropdown, Tooltip, Skeleton, EmptyState
-- [ ] Storybook + erişilebilirlik kontrolleri
+- [x] Token'lar, light/dark tema
+- [x] Button, Input, Dialog, Toast, Dropdown, Tooltip, Skeleton, EmptyState
+- [x] Storybook + erişilebilirlik kontrolleri
 - **Bitti:** Storybook yayında, bileşenler klavyeyle tamamen kullanılabiliyor
 
 ## Faz 2 – Backend temeli

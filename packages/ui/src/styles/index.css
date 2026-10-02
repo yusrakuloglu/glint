@@ -1,0 +1,21 @@
+/*
+ * Entry point for consumers, imported after Tailwind:
+ *   @import 'tailwindcss';
+ *   @import '@glint/ui/styles.css';
+ */
+@import './tokens.css';
+@import './theme.css';
+
+/* Scan component sources for class names, relative to this file */
+@source '..';
+@source not '../**/*.stories.tsx';
+@source not '../**/*.test.ts';
+
+@layer base {
+  :root,
+  :host {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+}

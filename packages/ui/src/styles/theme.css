@@ -1,0 +1,52 @@
+/*
+ * Maps semantic tokens to Tailwind utilities (bg-surface, text-fg-muted, ring-ring ...).
+ * The default Tailwind palette is removed so only token colors are available.
+ * "inline" makes utilities reference the variables, so theme changes apply at runtime.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-border-input: var(--border-input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-fg: var(--primary-fg);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-fg: var(--danger-fg);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+}
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* Backdrop behind modal dialogs; the same dim works on both themes */
+  --color-overlay: oklch(0.13 0.028 261 / 0.6);
+}
+
+/*
+ * dark: variant. Semantic tokens already switch with the theme, so this is only for
+ * rare one-off tweaks. Matches the same rules as tokens.css: explicit data-theme wins,
+ * otherwise the system preference.
+ */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:not([data-theme='light'], [data-theme='light'] *)) {
+      @slot;
+    }
+  }
+}

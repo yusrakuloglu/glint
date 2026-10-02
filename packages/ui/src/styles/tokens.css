@@ -1,0 +1,91 @@
+/*
+ * Design tokens.
+ *
+ * Primitives: raw OKLCH palette. Components never use these directly.
+ * Semantic: what components use. Each value is light-dark(<light>, <dark>), resolved
+ * by the color-scheme of the element, so one declaration covers both themes.
+ *
+ * Theme selection: system preference by default; data-theme="light" | "dark" on the
+ * root element (or the extension's shadow host) overrides it. Setting data-theme on a
+ * nested element is not supported: Tailwind's Lightning CSS compiles light-dark() into
+ * variables that resolve where the tokens are declared.
+ * :host makes the same tokens work inside the extension's Shadow DOM.
+ */
+
+:root,
+:host {
+  color-scheme: light dark;
+
+  /* Primitives: gray */
+  --gray-50: oklch(0.985 0.002 264);
+  --gray-100: oklch(0.967 0.003 264);
+  --gray-200: oklch(0.928 0.006 264);
+  --gray-300: oklch(0.872 0.01 258);
+  --gray-400: oklch(0.707 0.022 261);
+  --gray-500: oklch(0.551 0.027 264);
+  --gray-600: oklch(0.446 0.03 257);
+  --gray-700: oklch(0.373 0.034 260);
+  --gray-800: oklch(0.278 0.033 256);
+  --gray-900: oklch(0.21 0.034 264);
+  --gray-950: oklch(0.13 0.028 261);
+
+  /* Primitives: brand (sky) */
+  --brand-50: oklch(0.977 0.013 237);
+  --brand-100: oklch(0.951 0.026 237);
+  --brand-200: oklch(0.901 0.058 231);
+  --brand-300: oklch(0.828 0.111 230);
+  --brand-400: oklch(0.746 0.16 233);
+  --brand-500: oklch(0.685 0.169 237);
+  --brand-600: oklch(0.588 0.158 242);
+  --brand-700: oklch(0.5 0.134 243);
+  --brand-800: oklch(0.443 0.11 241);
+  --brand-900: oklch(0.391 0.09 241);
+  --brand-950: oklch(0.293 0.066 243);
+
+  /* Primitives: status */
+  --red-300: oklch(0.808 0.114 20);
+  --red-400: oklch(0.704 0.191 22);
+  --red-600: oklch(0.577 0.245 27);
+  --red-700: oklch(0.505 0.213 28);
+  --red-800: oklch(0.444 0.177 27);
+  --green-400: oklch(0.792 0.209 152);
+  --green-700: oklch(0.527 0.154 150);
+  --green-800: oklch(0.448 0.119 151);
+  --amber-400: oklch(0.828 0.189 84);
+  --amber-700: oklch(0.555 0.163 49);
+
+  /* Semantic: surfaces and text */
+  --bg: light-dark(var(--gray-50), var(--gray-950));
+  --surface: light-dark(white, var(--gray-900));
+  --surface-raised: light-dark(white, var(--gray-800));
+  --surface-hover: light-dark(var(--gray-100), var(--gray-800));
+  --fg: light-dark(var(--gray-900), var(--gray-50));
+  --fg-muted: light-dark(var(--gray-600), var(--gray-400));
+
+  /* Semantic: lines. border is decorative; border-input and ring must reach 3:1 */
+  --border: light-dark(var(--gray-200), var(--gray-800));
+  --border-input: light-dark(var(--gray-500), var(--gray-500));
+  --ring: light-dark(var(--brand-600), var(--brand-400));
+
+  /* Semantic: actions */
+  --primary: light-dark(var(--brand-700), var(--brand-400));
+  --primary-hover: light-dark(var(--brand-800), var(--brand-300));
+  --primary-fg: light-dark(white, var(--gray-950));
+  --danger: light-dark(var(--red-700), var(--red-400));
+  --danger-hover: light-dark(var(--red-800), var(--red-300));
+  --danger-fg: light-dark(white, var(--gray-950));
+
+  /* Semantic: status text */
+  --success: light-dark(var(--green-800), var(--green-400));
+  --warning: light-dark(var(--amber-700), var(--amber-400));
+}
+
+:root[data-theme='light'],
+:host([data-theme='light']) {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'],
+:host([data-theme='dark']) {
+  color-scheme: dark;
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@glint/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./styles.css": "./src/styles/index.css",
+    "./cn": "./src/lib/cn.ts",
+    "./button": "./src/components/button/index.ts",
+    "./input": "./src/components/input/index.ts",
+    "./skeleton": "./src/components/skeleton/index.ts",
+    "./empty-state": "./src/components/empty-state/index.ts",
+    "./portal-container": "./src/lib/portal-container.tsx",
+    "./tooltip": "./src/components/tooltip/index.ts",
+    "./dropdown-menu": "./src/components/dropdown-menu/index.ts",
+    "./dialog": "./src/components/dialog/index.ts",
+    "./toast": "./src/components/toast/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "storybook": "storybook dev --port 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.49.0",
+    "radix-ui": "^1.6.7",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@glint/config": "workspace:*",
+    "@storybook/addon-a11y": "^10.6.1",
+    "@storybook/addon-docs": "^10.6.1",
+    "@storybook/addon-vitest": "^10.6.1",
+    "@storybook/react-vite": "^10.6.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/browser-playwright": "^5.0.3",
+    "eslint": "^9.39.5",
+    "eslint-plugin-storybook": "^10.6.1",
+    "playwright": "^1.63.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "storybook": "^10.6.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}

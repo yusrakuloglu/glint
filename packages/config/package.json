@@ -7,11 +7,11 @@
     "./eslint/base": "./eslint/base.js",
     "./eslint/react": "./eslint/react.js",
     "./eslint/nest": "./eslint/nest.js",
-    "./tailwind/preset": "./tailwind/preset.js",
     "./prettier": "./prettier.config.js",
     "./tsconfig/base.json": "./tsconfig/base.json",
     "./tsconfig/nextjs.json": "./tsconfig/nextjs.json",
-    "./tsconfig/nest.json": "./tsconfig/nest.json"
+    "./tsconfig/nest.json": "./tsconfig/nest.json",
+    "./tsconfig/react-library.json": "./tsconfig/react-library.json"
   },
   "dependencies": {
     "@eslint/js": "^9.39.5",
@@ -22,7 +22,6 @@
     "eslint-plugin-import-x": "^4.6.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "tailwindcss": "^4.0.0",
     "typescript": "^5.7.3"
   }
 }

@@ -19,7 +19,7 @@ Kararların gerekçeleri: `docs/decisions.md`
 
 ## Komutlar
 
-Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`.
+Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`, `pnpm --filter @glint/ui exec playwright install chromium` (story testleri için).
 
 - `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build`: turbo ile tüm paketlerde; CI ilk üçünü çalıştırır
@@ -28,7 +28,8 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - `pnpm db:migrate`: bekleyen migration'ları uygular (`prisma migrate dev`)
 - `pnpm --filter @glint/api db:migrate --name <ad>`: şema değişikliğinden yeni migration üretir
 - `pnpm db:generate`: Prisma client'ı üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
-- Tek paket: `pnpm --filter @glint/<web|api|worker> <script>`
+- `pnpm --filter @glint/ui storybook` / `build-storybook`: Storybook (:6006) / statik build (`storybook-static/`)
+- Tek paket: `pnpm --filter @glint/<web|api|worker|ui> <script>`
 
 ## Kurallar
 
@@ -41,15 +42,27 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - Her yeni iş mantığı için test yaz ve testleri çalıştır. Testler geçmeden işi bitmiş sayma.
 - `.env` dosyalarını asla commit etme; yeni bir değişken eklenirse `.env.example`'ı güncelle.
 - Erişilebilirlik: tüm etkileşimli bileşenler klavyeyle kullanılabilir olmalı.
+- UI primitive'leri: `radix-ui` / `@radix-ui/*` yalnızca `packages/ui` içinde import edilir; uygulamalar sadece `@glint/ui` bileşenlerini kullanır (ESLint `no-restricted-imports` ile zorunlu).
 - Önemli bir mimari karar alındığında `docs/decisions.md`'ye kısa bir kayıt ekle.
 
-## Kendim yazacağım parçalar
+## Öğrenme dokümantasyonu
 
-Bu alanlarda çekirdek mantığı ben yazarım. Sen sadece review yap, test öner, soruya cevap ver; istemediğim sürece kodu kendin yazma:
+Her önemli parça için `docs/learn/` altında bir öğrenme dokümanı yazılır. Bir parça, dokümanı yazılmadan bitmiş sayılmaz.
 
-- Vurgulama motorunun eşleştirme algoritması
-- Hibrit arama SQL'i ve sıralama
-- Pipeline'daki idempotency mantığı
+Dosya adı konu bazlı: `docs/learn/<konu>.md` (örn. `contrast-check.md`, `idempotency.md`).
+`docs/learn/README.md` tüm dokümanların fazlara göre listesidir; her yeni dokümanda güncellenir.
+
+Her doküman şu bölümlerden oluşur:
+
+1. **Ne yaptık:** 2–3 cümlelik özet
+2. **Neden:** Çözülen problem, değerlendirilen alternatifler, ilgili `decisions.md` kaydı
+3. **Nasıl çalışıyor:** Adım adım açıklama, ilgili dosya ve fonksiyon referanslarıyla. Kodu tekrar yapıştırma, referans ver.
+4. **Sınır durumları ve kısıtlar:** Neyin çalışmadığı, bilinen riskler
+5. **Mülakat soruları:** 5–8 soru (temelden derine). Her cevap `<details>` içinde gizli olsun ki kendimi test edebileyim.
+6. **Kendini test et:** Kodu kapatıp anlatabilmem gereken 3–4 madde
+
+Dil: sade Türkçe, teknik terimler İngilizce kalabilir. Kısa tut; her doküman en fazla 2 sayfa.
+Commit tipi: `docs(learn): ...`
 
 ## Roadmap ve mevcut durum
 

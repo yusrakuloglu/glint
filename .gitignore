@@ -43,3 +43,7 @@ yarn-error.log*
 
 # Misc
 *.tsbuildinfo
+
+# Storybook
+storybook-static/
+**/__screenshots__/
