@@ -20,10 +20,11 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | ----------------------------------------------- | ---------------------------------------------- |
 | [design-tokens](design-tokens.md)               | Üç katmanlı token'lar, light/dark tema         |
 | [radix-ve-ui-mimarisi](radix-ve-ui-mimarisi.md) | Neden Radix, `@glint/ui` sınırı, portal yapısı |
+| [contrast-check](contrast-check.md)             | OKLCH → sRGB dönüşümü, WCAG kontrast testi     |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
 2. nestjs-temeli ve prisma-ve-pgvector: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
-4. design-tokens ve radix-ve-ui-mimarisi: frontend tarafı.
+4. design-tokens, contrast-check ve radix-ve-ui-mimarisi: frontend tarafı.

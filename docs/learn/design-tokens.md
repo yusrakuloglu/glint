@@ -33,8 +33,8 @@
    - Web tarafı yalnızca `@import 'tailwindcss'` ve `@import '@glint/ui/styles.css'` yazar.
 7. **Kontrast kontrolü:**
    - [read-tokens.ts](../../packages/ui/src/styles/read-tokens.ts) `tokens.css`'i okuyup her token'ı iki tema için OKLCH değerine çözüyor.
-   - [contrast.test.ts](../../packages/ui/src/styles/contrast.test.ts) renk çiftlerini WCAG eşikleriyle denetleyecek: metin için 4.5:1, input kenarı ve focus ring için 3:1.
-   - Dönüşüm ve kontrast fonksiyonları henüz yazılmadı. Yazılınca ayrı bir `contrast-check.md` dokümanı olacak.
+   - [contrast.test.ts](../../packages/ui/src/styles/contrast.test.ts) renk çiftlerini iki temada WCAG eşikleriyle denetliyor: metin için 4.5:1, input kenarı ve focus ring için 3:1.
+   - Dönüşüm ve hesap ayrıntıları: [contrast-check](contrast-check.md).
 
 ## Sınır durumları ve kısıtlar
 
@@ -46,7 +46,6 @@
   - `:host` seçicisi eklendi.
   - Tailwind 4'ün bazı utility'leri `@property` kullanıyor ve `@property` shadow root içinde tanımlanınca çalışmıyor.
   - `rem` birimi host sayfanın kök font boyutuna bağlı; eklenti arayüzü sayfadan sayfaya farklı boyutta görünebilir.
-- **Kontrast testi şu an `skip`'li:** Fonksiyonlar yazılana kadar kontrast otomatik doğrulanmıyor.
 - **FOUC:** Web'de tema seçici ve sayfa yüklenmeden temayı uygulayan script henüz yok (Faz 4).
 
 ## Mülakat soruları
