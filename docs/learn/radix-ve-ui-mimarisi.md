@@ -31,7 +31,7 @@
 2. **Paket yapısı ([package.json](../../packages/ui/package.json)):**
    - Barrel dosyası (`index.ts`) yok, alt yol export'ları var: `@glint/ui/cn`, `@glint/ui/styles.css`, ileride `@glint/ui/button` vb.
    - Avantajları: tree-shaking daha temiz, bir bileşeni import etmek diğerlerini yüklemiyor.
-3. **`'use client'` sınırı (planlandı):** Radix bileşenleri state ve effect kullanıyor. Onları saran her dosya `'use client'` ile başlayacak; Next'in Server Component'leri bu bileşenleri sorunsuz render edebilecek.
+3. **`'use client'` sınırı:** Radix bileşenleri hook kullanıyor (Slot bile `useComposedRefs` kullanıyor). Onları saran her dosya `'use client'` ile başlıyor ([button.tsx](../../packages/ui/src/components/button/button.tsx)); Next'in Server Component'leri bu bileşenleri sorunsuz render edebiliyor.
 4. **`cn()` ([cn.ts](../../packages/ui/src/lib/cn.ts)):**
    - `clsx` koşullu class'ları birleştiriyor.
    - `tailwind-merge` çakışan utility'lerde sonuncuyu bırakıyor: `cn('px-2', 'px-4')` sonucu `px-4`.
@@ -46,7 +46,7 @@
 - **Radix'in bakım hızı** son dönemde yavaşladı; uzun vadeli bir risk. İmport kısıtı geçiş maliyetini düşürüyor.
 - **ESLint kuralının açıkları:** Yalnızca statik import'ları yakalıyor. Dinamik `import('radix-ui')` veya başka bir paketin Radix'i re-export etmesi kuralı atlar.
 - **`tailwind-merge` özel utility'ler:** Tanımadığı değerleri tahmin ederek grupluyor; `cn('bg-surface', 'bg-bg')` → `bg-bg` doğru çalışıyor. Ama ileride özel bir boyut veya gölge utility'si eklenirse yanlış gruba düşebilir; o zaman `extendTailwindMerge` ile tanıtılır.
-- **Henüz bileşen yok:** Storybook ve axe altyapısı hazır ([storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md)); klavye senaryoları bileşenlerle birlikte gelecek.
+- **Bileşenler ekleniyor:** İlk bileşen [Button](button.md); diğerleri Faz 1 boyunca geliyor. Test altyapısı: [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md).
 
 ## Mülakat soruları
 

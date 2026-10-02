@@ -22,10 +22,11 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | [radix-ve-ui-mimarisi](radix-ve-ui-mimarisi.md)             | Neden Radix, `@glint/ui` sınırı, portal yapısı |
 | [contrast-check](contrast-check.md)                         | OKLCH → sRGB dönüşümü, WCAG kontrast testi     |
 | [storybook-ve-a11y-testleri](storybook-ve-a11y-testleri.md) | Story'ler Vitest testi olarak, axe kontrolleri |
+| [button](button.md)                                         | Varyantlar (cva), `asChild`, loading ve focus  |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
 2. nestjs-temeli ve prisma-ve-pgvector: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
-4. design-tokens, contrast-check, radix-ve-ui-mimarisi ve storybook-ve-a11y-testleri: frontend tarafı.
+4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button ...): frontend tarafı.

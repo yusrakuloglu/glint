@@ -2,7 +2,7 @@
 
 ## Ne yaptık
 
-Design token'larının renk kontrastını otomatik test eden bir kontrol yazdık. Test `tokens.css`'i okuyor, OKLCH renklerini sRGB'ye çeviriyor ve 18 renk çiftini her iki temada WCAG 2.2 AA eşikleriyle karşılaştırıyor. Bir token değişip kontrast düşerse `pnpm test` kırılıyor.
+Design token'larının renk kontrastını otomatik test eden bir kontrol yazdık. Test `tokens.css`'i okuyor, OKLCH renklerini sRGB'ye çeviriyor ve 32 renk çiftini her iki temada WCAG 2.2 AA eşikleriyle karşılaştırıyor. Bir token değişip kontrast düşerse `pnpm test` kırılıyor.
 
 ## Neden
 
@@ -28,18 +28,19 @@ Design token'larının renk kontrastını otomatik test eden bir kontrol yazdık
    - `relativeLuminance`: Her kanal `decode` ile tekrar lineerleştiriliyor, sonra gözün hassasiyetine göre ağırlıklandırılıyor: `0.2126·R + 0.7152·G + 0.0722·B` (göz en çok yeşile duyarlı).
    - Oran: `(açık + 0.05) / (koyu + 0.05)`. 0.05 ortam ışığının yansımasını temsil ediyor ve sıfıra bölmeyi önlüyor. Sonuç 1 ile 21 arasında.
 4. **Test ([contrast.test.ts](../../packages/ui/src/styles/contrast.test.ts)):**
-   - Çift listesi: metin çiftleri için 4.5:1 (WCAG 1.4.3), `border-input` ve `ring` için 3:1 (WCAG 1.4.11).
+   - Çift listesi: her metin token'ı her yüzey üzerinde 4.5:1 (WCAG 1.4.3); aksiyon renkleri kendi metinleriyle 4.5:1; `border-input` ve `ring` her yüzeyde 3:1 (WCAG 1.4.11).
+   - Önceden çiftler tek tek yazılıyordu. Yeni `surface-hover` eklenince axe, light temada `danger` (4.33) ve `success` (4.49) metninin bu yüzeyde eşiğin altında kaldığını yakaladı; liste bu yüzden metin × yüzey kombinasyonuna çevrildi.
    - `describe.each` iki temada da aynı listeyi çalıştırıyor.
 5. **Dönüşümün doğruluğu ([color.test.ts](../../packages/ui/src/styles/color.test.ts)):**
    - Bilinen referanslarla karşılaştırma: CSS Color 4'teki saf kırmızı, Tailwind'in yayınladığı gray-50 ve sky-700. Kanal başına en fazla 1/255 sapmaya izin veriliyor.
    - Kontrast için WebAIM değerleriyle karşılaştırma: `#767676` beyaz üzerinde 4.54, eşiği geçen en açık gri.
-6. **Mevcut durum:** Light temada en sıkı çiftler `danger-fg/danger` (4.76) ve `ring/bg` (3.85). Dark temada en sıkı çift `border-input/surface` (3.67).
+6. **Mevcut durum:** Light temada en sıkı çiftler `warning/surface-hover` (4.59) ve `ring/surface-hover` (3.65). Dark temada en sıkı çift `border-input/surface-raised` (3.04), yani eşiğin hemen üstünde.
 
 ## Sınır durumları ve kısıtlar
 
 - **Kırpma ile gamut mapping farkı:** Tarayıcılar gamut dışı rengi chroma'yı azaltarak sRGB'ye sığdırıyor; biz kırpıyoruz. Gamut dışı renklerde hesaplanan oran ile ekrandaki oran biraz farklı olabilir. Paletteki doygun kırmızılar (ör. `red-600`) bu sınıra yakın.
 - **Saydamlık yok:** Yarı saydam renkler (`bg-primary/50` gibi) arka planla karıştığı için bu testte değerlendirilmiyor.
-- **Yalnızca listedeki çiftler:** Yeni bir semantic token eklenince çift listesine elle eklenmeli; test eksik çifti kendisi bulmuyor.
+- **Liste elle güncelleniyor:** Yeni bir yüzey veya metin token'ı eklenince `surfaces` / `textTokens` dizilerine eklenmeli; test yeni token'ı kendisi bulmuyor.
 - **Büyük metin eşiği yok:** Büyük metin için WCAG 3:1 yeterli sayıyor; biz her metin çiftine 4.5:1 uyguluyoruz (bilinçli olarak sıkı).
 - **Parser kısıtlı:** Yalnızca birimsiz `oklch(L C H)` formatını okuyor. `50%` veya hex yazılırsa hata veriyor.
 
