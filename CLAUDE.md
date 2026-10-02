@@ -41,6 +41,7 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - Her yeni iş mantığı için test yaz ve testleri çalıştır. Testler geçmeden işi bitmiş sayma.
 - `.env` dosyalarını asla commit etme; yeni bir değişken eklenirse `.env.example`'ı güncelle.
 - Erişilebilirlik: tüm etkileşimli bileşenler klavyeyle kullanılabilir olmalı.
+- UI primitive'leri: `radix-ui` / `@radix-ui/*` yalnızca `packages/ui` içinde import edilir; uygulamalar sadece `@glint/ui` bileşenlerini kullanır (ESLint `no-restricted-imports` ile zorunlu).
 - Önemli bir mimari karar alındığında `docs/decisions.md`'ye kısa bir kayıt ekle.
 
 ## Kendim yazacağım parçalar

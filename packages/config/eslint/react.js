@@ -16,4 +16,17 @@ export default [
       ...jsxA11y.configs.recommended.rules,
     },
   },
+  {
+    // Apps use @glint/ui components only; Radix is an implementation detail of packages/ui
+    files: ['**/*.ts', '**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [{ name: 'radix-ui', message: 'Use components from @glint/ui instead.' }],
+          patterns: [{ group: ['@radix-ui/*'], message: 'Use components from @glint/ui instead.' }],
+        },
+      ],
+    },
+  },
 ]
