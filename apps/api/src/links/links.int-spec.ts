@@ -286,12 +286,134 @@ describe('links API', () => {
     })
   })
 
-  describe('authentication', () => {
+  describe('PATCH /links/:id', () => {
+    const patch = (user: TestUser, id: string, body: Record<string, unknown>) =>
+      t.http().patch(`/links/${id}`).set('authorization', user.authorization).send(body)
+
+    it('updates title and note', async () => {
+      const saved = await save(alice, { url: uniqueUrl(), title: 'Old' })
+
+      const response = await patch(alice, saved.body.id, { title: 'New', note: 'Worth it' })
+
+      expect(response.status).toBe(200)
+      expect(response.body).toMatchObject({ title: 'New', note: 'Worth it' })
+    })
+
+    it('clears fields with null and leaves omitted ones', async () => {
+      const saved = await save(alice, { url: uniqueUrl(), title: 'Mine', note: 'keep' })
+
+      const response = await patch(alice, saved.body.id, { title: null })
+
+      // Falls back to the page title, unknown until processing
+      expect(response.body).toMatchObject({ title: null, note: 'keep' })
+    })
+
+    it('keeps the first read time and clears it when unread', async () => {
+      const saved = await save(alice, { url: uniqueUrl() })
+
+      const read = (await patch(alice, saved.body.id, { read: true })).body as LinkBody
+      const readAgain = (await patch(alice, saved.body.id, { read: true })).body as LinkBody
+      const unread = (await patch(alice, saved.body.id, { read: false })).body as LinkBody
+
+      expect(read.readAt).toEqual(expect.any(String))
+      expect(readAgain.readAt).toBe(read.readAt)
+      expect(unread.readAt).toBeNull()
+    })
+
     it.each([
-      ['POST', '/links'],
-      ['GET', '/links/01920000-0000-7000-8000-000000000000'],
-    ])('%s %s requires a token', async (method, path) => {
-      const response = await t.http()[method === 'POST' ? 'post' : 'get'](path).send({})
+      ['an empty body', {}],
+      ['an unknown field', { deletedAt: null }],
+      ['a too long note', { note: 'x'.repeat(10_001) }],
+    ])('rejects %s', async (_, body) => {
+      const saved = await save(alice, { url: uniqueUrl() })
+
+      const response = await patch(alice, saved.body.id, body)
+
+      expect(response.status).toBe(400)
+      expect(parseProblem(response.text).code).toBe('validation_failed')
+    })
+
+    it('returns 404 for another user’s link and leaves it unchanged', async () => {
+      const saved = await save(alice, { url: uniqueUrl(), note: 'private' })
+
+      const response = await patch(bob, saved.body.id, { note: 'hacked' })
+
+      expect(response.status).toBe(404)
+      expect((await getLink(alice, saved.body.id)).body).toMatchObject({ note: 'private' })
+    })
+  })
+
+  describe('DELETE /links/:id', () => {
+    const remove = (user: TestUser, id: string) =>
+      t.http().delete(`/links/${id}`).set('authorization', user.authorization)
+
+    it('soft deletes the link', async () => {
+      const saved = await save(alice, { url: uniqueUrl() })
+
+      const response = await remove(alice, saved.body.id)
+
+      expect(response.status).toBe(204)
+      expect(response.text).toBe('')
+      expect((await getLink(alice, saved.body.id)).status).toBe(404)
+      expect(await t.prisma.savedLink.count({ where: { id: saved.body.id } })).toBe(1)
+    })
+
+    it('returns 404 when deleting twice or updating a deleted link', async () => {
+      const saved = await save(alice, { url: uniqueUrl() })
+      await remove(alice, saved.body.id)
+
+      expect((await remove(alice, saved.body.id)).status).toBe(404)
+      expect(
+        (
+          await t
+            .http()
+            .patch(`/links/${saved.body.id}`)
+            .set('authorization', alice.authorization)
+            .send({ note: 'x' })
+        ).status
+      ).toBe(404)
+    })
+
+    it('returns 404 for another user’s link and keeps it', async () => {
+      const saved = await save(alice, { url: uniqueUrl() })
+
+      expect((await remove(bob, saved.body.id)).status).toBe(404)
+      expect((await getLink(alice, saved.body.id)).status).toBe(200)
+    })
+
+    it('restores the same link with its highlights when saved again', async () => {
+      const url = uniqueUrl()
+      const saved = await save(alice, { url, note: 'old note' })
+      await t.prisma.highlight.create({
+        data: {
+          userId: alice.id,
+          savedLinkId: saved.body.id,
+          quote: 'hello',
+          selector: { type: 'TextQuoteSelector', exact: 'hello' },
+        },
+      })
+      await remove(alice, saved.body.id)
+
+      const restored = await save(alice, { url })
+
+      expect(restored.body.id).toBe(saved.body.id)
+      expect(restored.body.note).toBeNull()
+      expect(Date.parse(restored.body.createdAt)).toBeGreaterThan(Date.parse(saved.body.createdAt))
+      expect(await t.prisma.highlight.count({ where: { savedLinkId: saved.body.id } })).toBe(1)
+    })
+  })
+
+  describe('authentication', () => {
+    const someId = '01920000-0000-7000-8000-000000000000'
+
+    it.each([
+      ['post', '/links'],
+      ['get', '/links'],
+      ['get', `/links/${someId}`],
+      ['patch', `/links/${someId}`],
+      ['delete', `/links/${someId}`],
+    ] as const)('%s %s requires a token', async (method, path) => {
+      const response = await t.http()[method](path).send({})
 
       expect(response.status).toBe(401)
       expect(parseProblem(response.text).code).toBe('unauthenticated')

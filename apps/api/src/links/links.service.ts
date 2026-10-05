@@ -11,6 +11,12 @@ import { type linkSchema } from './links.contracts.js'
 type LinkWithContent = SavedLink & { content: Content }
 type LinkResponse = z.input<typeof linkSchema>
 
+export interface UpdateLinkInput {
+  title?: string | null | undefined
+  note?: string | null | undefined
+  read?: boolean | undefined
+}
+
 export interface SaveLinkInput {
   url: { original: string; normalized: string }
   title?: string | undefined
@@ -110,6 +116,35 @@ export class LinksService {
       throw linkNotFound()
     }
     return toLinkResponse(link)
+  }
+
+  async update(userId: string, id: string, changes: UpdateLinkInput): Promise<LinkResponse> {
+    const link = await this.prisma.savedLink.findFirst({ where: { id, ...activeLinks(userId) } })
+    if (link === null) {
+      throw linkNotFound()
+    }
+
+    const readAt =
+      changes.read === undefined ? undefined : changes.read ? (link.readAt ?? new Date()) : null
+
+    // The ownership filter is repeated so a link deleted in the meantime is
+    // not modified; Prisma then throws P2025, which becomes a 404
+    const updated = await this.prisma.savedLink.update({
+      where: { id, ...activeLinks(userId) },
+      data: { title: changes.title, note: changes.note, readAt },
+      include: { content: true },
+    })
+    return toLinkResponse(updated)
+  }
+
+  async softDelete(userId: string, id: string): Promise<void> {
+    const { count } = await this.prisma.savedLink.updateMany({
+      where: { id, ...activeLinks(userId) },
+      data: { deletedAt: new Date() },
+    })
+    if (count === 0) {
+      throw linkNotFound()
+    }
   }
 
   /**

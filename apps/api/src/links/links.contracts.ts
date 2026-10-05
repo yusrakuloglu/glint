@@ -99,3 +99,35 @@ export const listLinks = defineEndpoint({
   query: pageQuerySchema,
   response: { status: 200, description: 'A page of saved links', schema: pageSchema(linkSchema) },
 })
+
+export const updateLink = defineEndpoint({
+  method: 'PATCH',
+  path: '/links/:id',
+  operationId: 'updateLink',
+  summary: 'Update a saved link',
+  tag: TAG,
+  params: linkIdParams,
+  body: z
+    .strictObject({
+      /** null falls back to the page title */
+      title: titleSchema.nullable().optional(),
+      note: noteSchema.nullable().optional(),
+      /** Marks the link read (keeps the first read time) or unread */
+      read: z.boolean().optional(),
+    })
+    .refine((body) => Object.keys(body).length > 0, { message: 'At least one field is required' }),
+  response: { status: 200, description: 'The updated link', schema: linkSchema },
+})
+
+export const deleteLink = defineEndpoint({
+  method: 'DELETE',
+  path: '/links/:id',
+  operationId: 'deleteLink',
+  summary: 'Delete a saved link',
+  tag: TAG,
+  params: linkIdParams,
+  response: {
+    status: 204,
+    description: 'Deleted. Saving the same URL again restores the link with its highlights.',
+  },
+})
