@@ -7,12 +7,15 @@ import {
   type INestApplication,
   Logger,
   NotFoundException,
+  Param,
   Post,
 } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
+
+import { Prisma } from '../generated/prisma/client.js'
 
 import { CommonModule } from './common.module.js'
 import { ProblemException } from './problem-details.js'
@@ -44,6 +47,14 @@ class TestController {
   zodError() {
     // Internal parsing errors are bugs, not client errors
     return z.string().parse(42)
+  }
+
+  @Get('prisma/:code')
+  prisma(@Param('code') code: string) {
+    throw new Prisma.PrismaClientKnownRequestError('Unique constraint failed on (url)', {
+      code,
+      clientVersion: 'test',
+    })
   }
 
   @Post('echo')
@@ -123,6 +134,18 @@ describe('ProblemDetailsFilter', () => {
 
     expect(response.status).toBe(500)
     expect(JSON.parse(response.text)).toMatchObject({ code: 'internal_error' })
+  })
+
+  it.each([
+    ['P2002', 409, 'conflict'],
+    ['P2025', 404, 'not_found'],
+    ['P2003', 500, 'internal_error'],
+  ])('maps Prisma error %s to %i', async (prismaCode, status, code) => {
+    const response = await request(app.getHttpServer()).get(`/test/prisma/${prismaCode}`)
+
+    expect(response.status).toBe(status)
+    expect(JSON.parse(response.text)).toMatchObject({ code })
+    expect(response.text).not.toContain('Unique constraint')
   })
 
   it('returns bad_request for malformed JSON bodies', async () => {

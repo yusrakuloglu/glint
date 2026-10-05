@@ -3,6 +3,7 @@ import { z } from 'zod'
 const DEFAULT_PORT = 3001
 
 const envSchema = z.object({
+  DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
   API_PORT: z.coerce.number().int().min(1).max(65_535).default(DEFAULT_PORT),
   SUPABASE_URL: z
     .url({ protocol: /^https?$/ })
