@@ -89,3 +89,8 @@ Alternatif: `normalize-url` paketi (agresif varsayılanlar: `www.` ve sondaki `/
 
 Tüm hatalar `application/problem+json` döner: `type`, `title`, `status`, `detail`, `instance` ve ek olarak sabit bir `code` enum'u, `requestId`, validasyonda `errors[]`. Client `title`'a değil `code`'a göre dallanır. Tek bir global filter her hatayı çevirir; 5xx'lerde detay yalnızca loga yazılır. Request validasyonu kendi hatalarını 400'e çevirir; filter'a ham gelen ZodError iç bir hatadır ve 500 olur. Başka kullanıcıya ait bir kaynak 403 değil 404 döner, böylece varlığı sızmaz.
 Alternatif: Nest'in varsayılan `{ statusCode, message }` biçimi (standart değil, alan adları tutarsız), kendi zarf formatımız (`{ error: {...} }`; standart bir sözleşme varken yeniden icat).
+
+## 019 – Supabase JWT'si JWKS ile doğrulanır (2026-10-05)
+
+API, Supabase access token'larını projenin JWKS'iyle (`/auth/v1/.well-known/jwks.json`, ES256) `jose` kullanarak doğrular. API'de token üretebilecek bir sır durmaz; key rotation `kid` ile deploy gerektirmeden çalışır. Kontroller: algoritma allowlist'i (`ES256`, `RS256`; `none` ve HS256 karıştırması kapanır), `iss`, `aud=authenticated`, `exp` (5 sn tolerans), `sub` uuid, `role=authenticated`, anonim kullanıcı reddi. Token hatası 401 (`WWW-Authenticate: Bearer`); JWKS'e ulaşılamazsa 503, böylece Supabase kesintisi kullanıcıları oturumdan atmaz. Guard globaldir, açık route'lar `@Public()` ile işaretlenir. Testler yerelde üretilen bir ES256 key ile ağa çıkmadan çalışır.
+Alternatif: paylaşılan JWT secret (HS256; sızarsa token üretilebilir, rotation redeploy ister), her istekte `auth.getUser()` (ağ gecikmesi, rate limit), `@nestjs/passport` (tek strateji için gereksiz soyutlama).
