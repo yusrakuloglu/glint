@@ -15,5 +15,11 @@ onlyBuiltDependencies:
 
 # Kurulum script'i bilerek engellenen paketler (uyarı vermesin diye).
 # unrs-resolver: eslint-plugin-import-x bağımlılığı; script sadece yedek binary indirir.
+# ssh2, cpu-features: testcontainers (dockerode) üzerinden; yalnızca SSH ile uzak Docker'a
+# bağlanmak için opsiyonel native derleme. Yerel socket kullanıyoruz.
+# protobufjs: testcontainers üzerinden; script yalnızca sürüm kontrolü yapar.
 ignoredBuiltDependencies:
   - unrs-resolver
+  - ssh2
+  - cpu-features
+  - protobufjs

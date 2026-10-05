@@ -20,6 +20,9 @@
     "test": {
       "dependsOn": ["^build", "db:generate"]
     },
+    "test:int": {
+      "dependsOn": ["^build", "db:generate"]
+    },
     "db:migrate": {
       "cache": false
     },
