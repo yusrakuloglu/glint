@@ -26,9 +26,16 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | [form-ve-geri-bildirim-bilesenleri](form-ve-geri-bildirim-bilesenleri.md) | TextField, Skeleton, EmptyState                       |
 | [overlay-bilesenleri](overlay-bilesenleri.md)                             | Tooltip, DropdownMenu, Dialog, Toast, PortalContainer |
 
+## Faz 2 – Backend temeli
+
+| Doküman                                                                 | Konu                                          |
+| ----------------------------------------------------------------------- | --------------------------------------------- |
+| [veri-modeli-ve-kiraci-izolasyonu](veri-modeli-ve-kiraci-izolasyonu.md) | Paylaşılan Content, composite FK, soft delete |
+| [url-normalizasyonu](url-normalizasyonu.md)                             | Kanonik URL, muhafazakâr kurallar             |
+
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli ve prisma-ve-pgvector: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu ve url-normalizasyonu: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.
