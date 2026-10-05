@@ -74,3 +74,13 @@ Alternatif: tsup/tsdown ile `dist` üretmek; paket npm'e yayınlanacaksa gerekir
 
 Storybook 10 + `@storybook/addon-vitest`: her story headless Chromium'da Vitest testi olur, `play` senaryoları çalışır, axe ihlali testi kırar (`a11y.test: 'error'`). Test runner tek kalır (009). Açık modal overlay'lerde Radix'in arka planı `aria-hidden` yapıp focus'u kilitlemesi axe'ta `aria-hidden-focus` false positive'i üretir; kural yalnızca bu story'lerde kapatılır.
 Alternatif: Storybook test-runner (Jest + Playwright, ikinci runner), jsdom + Testing Library (kontrast ve focus ölçümü güvenilmez).
+
+## 016 – Veri modeli: paylaşılan Content, kullanıcıya özel SavedLink, composite FK (2026-10-05)
+
+Content normalize URL başına tektir (005); SavedLink, Tag, Collection, CollectionItem ve Highlight kullanıcıya aittir. `userId` Supabase auth kullanıcısının uuid'idir; auth ayrı bir veritabanında olduğu için FK verilmez. Bu yüzden Supabase'den silinen kullanıcının verisi kendiliğinden silinmez, temizliği ileride bir job yapar. Kullanıcıya ait alt kayıtlar ebeveyne `(id, user_id)` composite FK ile bağlanır: uygulama kodu hata yapsa bile veritabanı iki farklı kullanıcının kaydını birbirine bağlamayı reddeder. SavedLink soft delete'tir (`deleted_at`); aynı URL tekrar kaydedilince yeni satır açılmaz, eski satır geri getirilir. Böylece `UNIQUE(user_id, content_id)` yeterli olur ve highlight'lar korunur. ID'ler UUIDv7, zaman damgaları `timestamptz(3)`.
+Alternatif: Postgres RLS (tek DB rolüyle Prisma kullanırken her transaction'da `SET LOCAL` gerektirir), soft delete + partial unique index (Prisma şemasında desteklenmiyor, elle SQL gerekir).
+
+## 017 – URL normalizasyonu muhafazakâr (2026-10-05)
+
+Content paylaşımı normalize URL'ye dayandığı için kurallar yanlış birleştirme yapmamalı: yanlışlıkla iki farklı sayfayı birleştirmek (başka sayfanın özeti), aynı sayfayı iki kez işlemekten daha kötü. Yapılan: WHATWG `URL` normalizasyonu (küçük harf scheme/host, punycode, varsayılan port), host sonundaki nokta, fragment (`#!` ve `#/` hariç), tracking parametreleri (`utm_*`, click id'ler), parametre sıralaması. Yapılmayan: path büyük/küçük harfi, sondaki `/`, `www.`, http→https. Query ham segmentlerle işlenir; `URLSearchParams` değerleri yeniden encode ettiği için kullanılmaz. Yalnızca http/https, kullanıcı bilgisi içeren URL'ler reddedilir, en fazla 2048 karakter.
+Alternatif: `normalize-url` paketi (agresif varsayılanlar: `www.` ve sondaki `/` silinir), ileride eklentinin gönderdiği `rel=canonical` ile birleştirme (Faz 3/6'da eklenebilir).

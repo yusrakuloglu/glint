@@ -20,7 +20,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 
 ## Faz 2 – Backend temeli
 
-- [ ] Veri modeli: Content, SavedLink, Chunk, Tag, Collection, Highlight
+- [x] Veri modeli: Content, SavedLink, Chunk, Tag, Collection, Highlight
 - [ ] Supabase JWT doğrulama, links CRUD
 - [ ] Cursor pagination, tutarlı hata formatı, OpenAPI
 - [ ] orval ile packages/api-client
