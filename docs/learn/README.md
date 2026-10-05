@@ -28,16 +28,19 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 
 ## Faz 2 – Backend temeli
 
-| Doküman                                                                 | Konu                                          |
-| ----------------------------------------------------------------------- | --------------------------------------------- |
-| [veri-modeli-ve-kiraci-izolasyonu](veri-modeli-ve-kiraci-izolasyonu.md) | Paylaşılan Content, composite FK, soft delete |
-| [url-normalizasyonu](url-normalizasyonu.md)                             | Kanonik URL, muhafazakâr kurallar             |
-| [supabase-jwt-ve-jwks](supabase-jwt-ve-jwks.md)                         | JWKS ile token doğrulama, global guard        |
-| [problem-details](problem-details.md)                                   | RFC 9457 hata formatı, request id             |
+| Doküman                                                                             | Konu                                                    |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [veri-modeli-ve-kiraci-izolasyonu](veri-modeli-ve-kiraci-izolasyonu.md)             | Paylaşılan Content, composite FK, soft delete           |
+| [url-normalizasyonu](url-normalizasyonu.md)                                         | Kanonik URL, muhafazakâr kurallar                       |
+| [supabase-jwt-ve-jwks](supabase-jwt-ve-jwks.md)                                     | JWKS ile token doğrulama, global guard                  |
+| [problem-details](problem-details.md)                                               | RFC 9457 hata formatı, request id                       |
+| [zod-contract-katmani](zod-contract-katmani.md)                                     | Endpoint contract'ları, validasyon, response filtreleme |
+| [cursor-pagination](cursor-pagination.md)                                           | Keyset pagination, tie-breaker, index                   |
+| [testcontainers-ve-integration-testleri](testcontainers-ve-integration-testleri.md) | Gerçek Postgres ile testler, yetki senaryoları          |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks ve problem-details: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination ve testcontainers-ve-integration-testleri: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.

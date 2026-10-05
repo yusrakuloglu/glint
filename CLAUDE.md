@@ -23,6 +23,7 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 
 - `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build`: turbo ile tüm paketlerde; CI ilk üçünü çalıştırır
+- `pnpm test:int`: API integration testleri (`*.int-spec.ts`), Testcontainers ile gerçek Postgres; Docker çalışıyor olmalı. CI'da ayrı job
 - `pnpm format` / `pnpm format:check`: Prettier
 - `pnpm db:up` / `pnpm db:down`: lokal Postgres + pgvector (docker compose)
 - `pnpm db:migrate`: bekleyen migration'ları uygular (`prisma migrate dev`)
