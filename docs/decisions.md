@@ -84,3 +84,8 @@ Alternatif: Postgres RLS (tek DB rolüyle Prisma kullanırken her transaction'da
 
 Content paylaşımı normalize URL'ye dayandığı için kurallar yanlış birleştirme yapmamalı: yanlışlıkla iki farklı sayfayı birleştirmek (başka sayfanın özeti), aynı sayfayı iki kez işlemekten daha kötü. Yapılan: WHATWG `URL` normalizasyonu (küçük harf scheme/host, punycode, varsayılan port), host sonundaki nokta, fragment (`#!` ve `#/` hariç), tracking parametreleri (`utm_*`, click id'ler), parametre sıralaması. Yapılmayan: path büyük/küçük harfi, sondaki `/`, `www.`, http→https. Query ham segmentlerle işlenir; `URLSearchParams` değerleri yeniden encode ettiği için kullanılmaz. Yalnızca http/https, kullanıcı bilgisi içeren URL'ler reddedilir, en fazla 2048 karakter.
 Alternatif: `normalize-url` paketi (agresif varsayılanlar: `www.` ve sondaki `/` silinir), ileride eklentinin gönderdiği `rel=canonical` ile birleştirme (Faz 3/6'da eklenebilir).
+
+## 018 – Hatalar RFC 9457 Problem Details, başkasının kaynağı 404 (2026-10-05)
+
+Tüm hatalar `application/problem+json` döner: `type`, `title`, `status`, `detail`, `instance` ve ek olarak sabit bir `code` enum'u, `requestId`, validasyonda `errors[]`. Client `title`'a değil `code`'a göre dallanır. Tek bir global filter her hatayı çevirir; 5xx'lerde detay yalnızca loga yazılır. Request validasyonu kendi hatalarını 400'e çevirir; filter'a ham gelen ZodError iç bir hatadır ve 500 olur. Başka kullanıcıya ait bir kaynak 403 değil 404 döner, böylece varlığı sızmaz.
+Alternatif: Nest'in varsayılan `{ statusCode, message }` biçimi (standart değil, alan adları tutarsız), kendi zarf formatımız (`{ error: {...} }`; standart bir sözleşme varken yeniden icat).
