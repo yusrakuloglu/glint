@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { defineEndpoint } from '../common/contract/endpoint-contract.js'
+import { pageQuerySchema, pageSchema } from '../common/pagination/cursor.js'
 import { ContentStatus } from '../generated/prisma/enums.js'
 
 import { InvalidUrlError, normalizeUrl } from './normalize-url.js'
@@ -87,4 +88,14 @@ export const getLink = defineEndpoint({
   tag: TAG,
   params: linkIdParams,
   response: { status: 200, description: 'The saved link', schema: linkSchema },
+})
+
+export const listLinks = defineEndpoint({
+  method: 'GET',
+  path: '/links',
+  operationId: 'listLinks',
+  summary: 'List saved links, newest first',
+  tag: TAG,
+  query: pageQuerySchema,
+  response: { status: 200, description: 'A page of saved links', schema: pageSchema(linkSchema) },
 })

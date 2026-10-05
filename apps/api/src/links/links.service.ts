@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { type z } from 'zod'
 
+import { type Cursor, toPage } from '../common/pagination/cursor.js'
 import { ProblemException } from '../common/problem-details.js'
 import { type Content, Prisma, type SavedLink } from '../generated/prisma/client.js'
 import { PrismaService } from '../prisma/prisma.service.js'
@@ -109,6 +110,31 @@ export class LinksService {
       throw linkNotFound()
     }
     return toLinkResponse(link)
+  }
+
+  /**
+   * Keyset pagination over (createdAt DESC, id DESC), served by the
+   * saved_links (user_id, created_at DESC, id DESC) index. The id breaks ties
+   * between links saved in the same millisecond, so no row is skipped or
+   * repeated across pages.
+   */
+  async list(userId: string, { cursor, limit }: { cursor?: Cursor | undefined; limit: number }) {
+    const rows = await this.prisma.savedLink.findMany({
+      where: {
+        ...activeLinks(userId),
+        ...(cursor !== undefined && {
+          OR: [
+            { createdAt: { lt: cursor.createdAt } },
+            { createdAt: cursor.createdAt, id: { lt: cursor.id } },
+          ],
+        }),
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+      take: limit + 1,
+      include: { content: true },
+    })
+    const page = toPage(rows, limit)
+    return { items: page.items.map(toLinkResponse), nextCursor: page.nextCursor }
   }
 
   /** Race-free: INSERT ... ON CONFLICT DO NOTHING, then read the row. */

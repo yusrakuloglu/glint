@@ -5,7 +5,7 @@ import { CurrentUser } from '../auth/current-user.decorator.js'
 import { type EndpointInput, type EndpointResult } from '../common/contract/endpoint-contract.js'
 import { Endpoint, Input } from '../common/contract/endpoint.decorator.js'
 
-import { createLink, getLink } from './links.contracts.js'
+import { createLink, getLink, listLinks } from './links.contracts.js'
 import { LinksService } from './links.service.js'
 
 @Controller()
@@ -18,6 +18,14 @@ export class LinksController {
     @Input() { body }: EndpointInput<typeof createLink>
   ): Promise<EndpointResult<typeof createLink>> {
     return this.links.save(user.id, body)
+  }
+
+  @Endpoint(listLinks)
+  list(
+    @CurrentUser() user: AuthUser,
+    @Input() { query }: EndpointInput<typeof listLinks>
+  ): Promise<EndpointResult<typeof listLinks>> {
+    return this.links.list(user.id, query)
   }
 
   @Endpoint(getLink)

@@ -177,6 +177,115 @@ describe('links API', () => {
     })
   })
 
+  describe('GET /links', () => {
+    interface PageBody {
+      items: LinkBody[]
+      nextCursor: string | null
+    }
+
+    async function list(user: TestUser, query: Record<string, string | number> = {}) {
+      const response = await t
+        .http()
+        .get('/links')
+        .query(query)
+        .set('authorization', user.authorization)
+      return { status: response.status, body: response.body as PageBody, text: response.text }
+    }
+
+    async function listAll(user: TestUser, limit: number) {
+      const ids: string[] = []
+      let cursor: string | null = null
+      do {
+        const page = await list(user, { limit, ...(cursor !== null && { cursor }) })
+        expect(page.status).toBe(200)
+        ids.push(...page.body.items.map((item) => item.id))
+        cursor = page.body.nextCursor
+      } while (cursor !== null)
+      return ids
+    }
+
+    async function saveMany(user: TestUser, count: number) {
+      const ids: string[] = []
+      for (let i = 0; i < count; i++) {
+        ids.push((await save(user, { url: uniqueUrl() })).body.id)
+      }
+      return ids
+    }
+
+    it('returns newest first with a cursor to the next page', async () => {
+      const ids = await saveMany(alice, 3)
+
+      const first = await list(alice, { limit: 2 })
+      expect(first.body.items.map((item) => item.id)).toEqual([ids[2], ids[1]])
+      expect(first.body.nextCursor).toEqual(expect.any(String))
+
+      const second = await list(alice, { limit: 2, cursor: first.body.nextCursor ?? '' })
+      expect(second.body.items.map((item) => item.id)).toEqual([ids[0]])
+      expect(second.body.nextCursor).toBeNull()
+    })
+
+    it('neither skips nor repeats links saved in the same millisecond', async () => {
+      const ids = await saveMany(alice, 7)
+      await t.prisma.savedLink.updateMany({
+        where: { userId: alice.id },
+        data: { createdAt: new Date('2026-10-05T12:00:00.000Z') },
+      })
+
+      const listed = await listAll(alice, 2)
+
+      expect(listed).toHaveLength(7)
+      expect(new Set(listed)).toEqual(new Set(ids))
+      // Ties are ordered by id descending
+      expect(listed).toEqual([...listed].sort().reverse())
+    })
+
+    it('uses the default page size', async () => {
+      await saveMany(alice, 21)
+
+      const page = await list(alice)
+
+      expect(page.body.items).toHaveLength(20)
+      expect(page.body.nextCursor).not.toBeNull()
+    })
+
+    it('only lists the caller’s links', async () => {
+      const aliceIds = await saveMany(alice, 2)
+      const bobIds = await saveMany(bob, 2)
+
+      expect(await listAll(alice, 10)).toEqual([...aliceIds].reverse())
+      expect(await listAll(bob, 10)).toEqual([...bobIds].reverse())
+    })
+
+    it('does not leak links through another user’s cursor', async () => {
+      await saveMany(alice, 3)
+      const bobIds = await saveMany(bob, 1)
+      const aliceCursor = (await list(alice, { limit: 1 })).body.nextCursor ?? ''
+
+      const page = await list(bob, { cursor: aliceCursor })
+
+      expect(page.status).toBe(200)
+      expect(page.body.items.every((item) => bobIds.includes(item.id))).toBe(true)
+    })
+
+    it('hides soft-deleted links', async () => {
+      const [kept, deleted] = await saveMany(alice, 2)
+      await t.prisma.savedLink.update({ where: { id: deleted }, data: { deletedAt: new Date() } })
+
+      expect(await listAll(alice, 10)).toEqual([kept])
+    })
+
+    it.each([
+      ['an invalid cursor', { cursor: 'garbage' }, 'query.cursor'],
+      ['a limit above the maximum', { limit: 101 }, 'query.limit'],
+      ['a zero limit', { limit: 0 }, 'query.limit'],
+    ])('rejects %s', async (_, query, path) => {
+      const page = await list(alice, query)
+
+      expect(page.status).toBe(400)
+      expect(parseProblem(page.text).errors?.map((error) => error.path)).toEqual([path])
+    })
+  })
+
   describe('authentication', () => {
     it.each([
       ['POST', '/links'],
