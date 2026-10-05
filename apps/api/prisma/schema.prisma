@@ -1,5 +1,3 @@
-// Data model is added in Phase 2.
-
 generator client {
   provider            = "prisma-client"
   output              = "../src/generated/prisma"
@@ -10,4 +8,176 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// Conventions:
+// - IDs are UUIDv7 (time-ordered, good index locality).
+// - Timestamps use millisecond precision to match JS Date, so pagination
+//   cursors round-trip without losing precision.
+// - userId is the Supabase auth user id. Auth lives in a separate database,
+//   so there is no foreign key to it.
+// - Every user-owned child references its parent with (id, userId), so the
+//   database rejects links between rows of different users.
+
+enum ContentStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum TagSource {
+  USER
+  AI
+}
+
+enum HighlightColor {
+  YELLOW
+  GREEN
+  BLUE
+  PINK
+  PURPLE
+}
+
+/// Shared per normalized URL: summaries and chunks are produced once for all users.
+model Content {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  /// Normalized URL, max 2048 chars (CHECK constraint in migration)
+  url       String        @unique
+  title     String?
+  siteName  String?       @map("site_name")
+  summary   String?
+  language  String?
+  status    ContentStatus @default(PENDING)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  savedLinks SavedLink[]
+  chunks     Chunk[]
+
+  @@map("contents")
+}
+
+/// A user's save of a Content. Soft deleted; saving the same URL again restores it.
+model SavedLink {
+  id          String    @id @default(uuid(7)) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  contentId   String    @map("content_id") @db.Uuid
+  /// URL as the user submitted it, before normalization
+  originalUrl String    @map("original_url")
+  /// User override of Content.title
+  title       String?
+  note        String?
+  readAt      DateTime? @map("read_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  content         Content          @relation(fields: [contentId], references: [id], onDelete: Restrict)
+  tags            SavedLinkTag[]
+  collectionItems CollectionItem[]
+  highlights      Highlight[]
+
+  @@unique([userId, contentId])
+  // Target of composite foreign keys from user-owned children
+  @@unique([id, userId])
+  // Cursor pagination: newest first, id breaks ties
+  @@index([userId, createdAt(sort: Desc), id(sort: Desc)])
+  @@map("saved_links")
+}
+
+model Chunk {
+  id         String                      @id @default(uuid(7)) @db.Uuid
+  contentId  String                      @map("content_id") @db.Uuid
+  index      Int
+  text       String
+  tokenCount Int                         @map("token_count")
+  /// multilingual-e5-small; read and written with raw SQL
+  embedding  Unsupported("vector(384)")?
+  createdAt  DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@unique([contentId, index])
+  @@map("chunks")
+}
+
+model Tag {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  name      String
+  /// Trimmed, NFC-normalized, lowercased name; unique per user
+  slug      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  links SavedLinkTag[]
+
+  @@unique([userId, slug])
+  @@unique([id, userId])
+  @@map("tags")
+}
+
+model SavedLinkTag {
+  userId      String    @map("user_id") @db.Uuid
+  savedLinkId String    @map("saved_link_id") @db.Uuid
+  tagId       String    @map("tag_id") @db.Uuid
+  source      TagSource @default(USER)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  savedLink SavedLink @relation(fields: [savedLinkId, userId], references: [id, userId], onDelete: Cascade)
+  tag       Tag       @relation(fields: [tagId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@id([savedLinkId, tagId])
+  @@index([tagId])
+  @@map("saved_link_tags")
+}
+
+model Collection {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  items CollectionItem[]
+
+  @@unique([userId, name])
+  @@unique([id, userId])
+  @@map("collections")
+}
+
+model CollectionItem {
+  userId       String   @map("user_id") @db.Uuid
+  collectionId String   @map("collection_id") @db.Uuid
+  savedLinkId  String   @map("saved_link_id") @db.Uuid
+  /// Fractional index key for drag-and-drop ordering (Phase 4)
+  position     String
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  collection Collection @relation(fields: [collectionId, userId], references: [id, userId], onDelete: Cascade)
+  savedLink  SavedLink  @relation(fields: [savedLinkId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@id([collectionId, savedLinkId])
+  @@index([savedLinkId])
+  @@map("collection_items")
+}
+
+model Highlight {
+  id          String         @id @default(uuid(7)) @db.Uuid
+  userId      String         @map("user_id") @db.Uuid
+  savedLinkId String         @map("saved_link_id") @db.Uuid
+  /// Highlighted text, kept for display even if re-anchoring fails
+  quote       String
+  /// W3C TextQuote + TextPosition selectors; shape validated with Zod
+  selector    Json
+  color       HighlightColor @default(YELLOW)
+  note        String?
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  savedLink SavedLink @relation(fields: [savedLinkId, userId], references: [id, userId], onDelete: Cascade)
+
+  @@index([savedLinkId])
+  @@map("highlights")
 }
