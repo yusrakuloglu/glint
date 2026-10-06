@@ -474,6 +474,7 @@
           "status": {
             "type": "string",
             "enum": [
+              "AWAITING_CONTENT",
               "PENDING",
               "PROCESSING",
               "READY",

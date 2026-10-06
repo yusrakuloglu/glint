@@ -66,7 +66,7 @@ describe('links API', () => {
         canonicalUrl: url.replace('?utm_source=x&b=2&a=1#intro', '?a=1&b=2'),
         title: 'Read later',
         note: 'note',
-        status: 'PENDING',
+        status: 'AWAITING_CONTENT',
         readAt: null,
       })
       expect(Object.keys(response.body).sort()).toEqual(
