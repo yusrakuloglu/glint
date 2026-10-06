@@ -11,7 +11,9 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@glint/api-client": "workspace:*",
     "@glint/ui": "workspace:*",
+    "@tanstack/react-query": "^5.104.1",
     "next": "^16.3.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"

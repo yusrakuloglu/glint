@@ -102,9 +102,15 @@ importers:
 
   apps/web:
     dependencies:
+      '@glint/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@glint/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@tanstack/react-query':
+        specifier: ^5.104.1
+        version: 5.104.1(react@19.3.0)
       next:
         specifier: ^16.3.8
         version: 16.3.8(@types/node@24.19.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
