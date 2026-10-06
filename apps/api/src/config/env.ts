@@ -5,6 +5,11 @@ const DEFAULT_PORT = 3001
 const envSchema = z.object({
   DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
   API_PORT: z.coerce.number().int().min(1).max(65_535).default(DEFAULT_PORT),
+  /** Browser origin of the web app, allowed by CORS */
+  WEB_ORIGIN: z
+    .url({ protocol: /^https?$/ })
+    .default('http://localhost:3000')
+    .transform((value) => new URL(value).origin),
   SUPABASE_URL: z
     .url({ protocol: /^https?$/ })
     .refine((value) => new URL(value).pathname === '/', {

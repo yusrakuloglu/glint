@@ -8,7 +8,7 @@ const base = { DATABASE_URL, SUPABASE_URL }
 
 describe('parseEnv', () => {
   it('applies defaults', () => {
-    expect(parseEnv(base)).toEqual({ ...base, API_PORT: 3001 })
+    expect(parseEnv(base)).toEqual({ ...base, API_PORT: 3001, WEB_ORIGIN: 'http://localhost:3000' })
   })
 
   it('coerces the port', () => {
@@ -26,6 +26,7 @@ describe('parseEnv', () => {
     ['Supabase URL with a path', { ...base, SUPABASE_URL: `${SUPABASE_URL}/rest/v1/` }],
     ['non-http Supabase URL', { ...base, SUPABASE_URL: 'ftp://abcdefgh.supabase.co' }],
     ['invalid port', { ...base, API_PORT: 'abc' }],
+    ['invalid web origin', { ...base, WEB_ORIGIN: 'localhost:3000' }],
   ])('rejects %s', (_, source) => {
     expect(() => parseEnv(source)).toThrow(/Invalid environment variables/)
   })
