@@ -41,13 +41,15 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 
 ## Faz 3 – İşleme pipeline'ı
 
-| Doküman                                       | Konu                                                                |
-| --------------------------------------------- | ------------------------------------------------------------------- |
-| [idempotent-pipeline](idempotent-pipeline.md) | Transaction içinde kuyruğa gönderim, outbox kıyası, güvenli kapanış |
+| Doküman                                         | Konu                                                                |
+| ----------------------------------------------- | ------------------------------------------------------------------- |
+| [pg-boss-ve-kuyruklar](pg-boss-ve-kuyruklar.md) | Postgres üzerinde kuyruk, SKIP LOCKED, singletonKey, retry          |
+| [idempotent-pipeline](idempotent-pipeline.md)   | Transaction içinde kuyruğa gönderim, outbox kıyası, güvenli kapanış |
+| [ai-kotasi](ai-kotasi.md)                       | Atomik sayaç, işi erteleme, snapshot depolaması                     |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination, testcontainers-ve-integration-testleri, openapi-ve-api-client ve idempotent-pipeline: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination, testcontainers-ve-integration-testleri, openapi-ve-api-client, pg-boss-ve-kuyruklar, idempotent-pipeline ve ai-kotasi: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.

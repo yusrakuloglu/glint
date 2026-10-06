@@ -31,7 +31,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 
 - [ ] pg-boss: içerik çıkarma → özet/etiket → chunk → embedding
 - [ ] Idempotency, retry/backoff, Gemini → Groq fallback
-- [ ] URL bazında tekrar önleme, kullanıcı başına günlük AI limiti
+- [x] URL bazında tekrar önleme, kullanıcı başına günlük AI limiti
 - **Bitti:** Çift çalışma ve fallback testlerle kanıtlı
 
 ## Faz 4 – Web uygulaması
