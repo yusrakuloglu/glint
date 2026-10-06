@@ -11,6 +11,6 @@ export default [
     },
   },
   {
-    ignores: ['src/generated/**'],
+    ignores: ['src/generated/**', 'dist-worker/**'],
   },
 ]

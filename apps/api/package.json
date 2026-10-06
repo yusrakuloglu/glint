@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "nest start --watch",
+    "dev:worker": "nest start --watch --entryFile worker/main --path tsconfig.worker.json",
     "build": "nest build",
     "start": "node dist/main.js",
+    "start:worker": "node dist/worker/main.js",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --project unit",

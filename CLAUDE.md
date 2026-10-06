@@ -6,8 +6,7 @@ Portfolyo projesi: frontend derinliği + gerçek backend deneyimi. Bütçe sıf�
 ## Mimari
 
 - `apps/web`: Next.js (App Router), TypeScript, Tailwind, TanStack Query
-- `apps/api`: NestJS REST API, Prisma, OpenAPI
-- `apps/worker`: NestJS, api ile aynı kod tabanını paylaşır, ayrı process (pg-boss job'ları)
+- `apps/api`: NestJS REST API, Prisma, OpenAPI. Worker da burada: ikinci entrypoint (`src/worker/main.ts`), ayrı process (pg-boss job'ları)
 - `apps/extension`: WXT + React (Chrome ve Firefox), arayüz Shadow DOM içinde
 - `packages/ui`: design system + Storybook (web ve eklenti ortak kullanır)
 - `packages/api-client`: OpenAPI'den orval ile üretilir, ELLE DÜZENLENMEZ
@@ -21,7 +20,7 @@ Kararların gerekçeleri: `docs/decisions.md`
 
 Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk kurulum: `pnpm install`, `cp .env.example .env`, `pnpm db:up`, `pnpm db:migrate`, `pnpm --filter @glint/ui exec playwright install chromium` (story testleri için).
 
-- `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır
+- `pnpm dev`: web (:3000), api (:3001) ve worker'ı izleme modunda başlatır (worker tek başına: `pnpm --filter @glint/api dev:worker`; production: `start:worker`)
 - `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build`: turbo ile tüm paketlerde; CI ilk üçünü çalıştırır
 - `pnpm test:int`: API integration testleri (`*.int-spec.ts`), Testcontainers ile gerçek Postgres; Docker çalışıyor olmalı. CI'da ayrı job
 - `pnpm format` / `pnpm format:check`: Prettier
@@ -33,7 +32,7 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - `codegen` (turbo): `packages/api-client`'ı orval ile `openapi.json`'dan üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
 - API dokümanı: çalışan API'de `/docs` (Scalar) ve `/openapi.json`
 - `pnpm --filter @glint/ui storybook` / `build-storybook`: Storybook (:6006) / statik build (`storybook-static/`)
-- Tek paket: `pnpm --filter @glint/<web|api|worker|ui|api-client> <script>` (üretilmiş kod gerekiyorsa `pnpm turbo <görev> --filter=...`)
+- Tek paket: `pnpm --filter @glint/<web|api|ui|api-client> <script>` (üretilmiş kod gerekiyorsa `pnpm turbo <görev> --filter=...`)
 
 ## Kurallar
 

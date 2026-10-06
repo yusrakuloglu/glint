@@ -26,7 +26,7 @@ Testler Vitest ile yazılıyor. Nest'in decorator metadata'sı için derleme SWC
    - `NestFactory.create` uygulamayı kuruyor.
    - `enableShutdownHooks` sayesinde SIGTERM gelince modüller düzgün kapanıyor.
    - Port `API_PORT` değişkeninden geliyor, varsayılanı 3001.
-3. **Worker ([worker main.ts](../../apps/worker/src/main.ts)):** `createApplicationContext` aynı DI container'ını HTTP katmanı olmadan kuruyor.
+3. **Worker ([worker main.ts](../../apps/api/src/worker/main.ts)):** `createApplicationContext` aynı DI container'ını HTTP katmanı olmadan kuruyor. Faz 3'te `apps/api` içinde ikinci bir entrypoint'e taşındı ([025](../decisions.md)).
 4. **Test ([health.controller.spec.ts](../../apps/api/src/health/health.controller.spec.ts)):**
    - `Test.createTestingModule({ imports: [AppModule] })` gerçek modül ağacını kuruyor.
    - `supertest` HTTP isteği atıyor. Hem 200 + gövde, hem de bilinmeyen route için 404 kontrol ediliyor.

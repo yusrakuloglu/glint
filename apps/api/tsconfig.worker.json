@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    // `pnpm dev` runs the api and worker watchers side by side; separate output
+    // keeps one watcher from deleting the other's build
+    "outDir": "dist-worker"
+  }
+}

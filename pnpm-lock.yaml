@@ -149,37 +149,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  apps/worker:
-    dependencies:
-      '@nestjs/common':
-        specifier: ^12.1.2
-        version: 12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: ^12.1.2
-        version: 12.1.2(@nestjs/common@12.1.2(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@12.1.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-    devDependencies:
-      '@glint/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@nestjs/cli':
-        specifier: ^12.0.8
-        version: 12.0.8(@swc/core@1.16.13(@swc/helpers@0.5.23))(@types/node@24.19.0)(prettier@3.9.9)
-      '@types/node':
-        specifier: ^24.19.0
-        version: 24.19.0
-      eslint:
-        specifier: ^9.39.5
-        version: 9.39.5(jiti@2.7.0)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   packages/api-client:
     devDependencies:
       '@glint/config':
