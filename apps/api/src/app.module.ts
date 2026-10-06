@@ -5,9 +5,18 @@ import { CommonModule } from './common/common.module.js'
 import { ConfigModule } from './config/config.module.js'
 import { HealthModule } from './health/health.module.js'
 import { LinksModule } from './links/links.module.js'
+import { OpenApiModule } from './openapi/openapi.module.js'
 import { PrismaModule } from './prisma/prisma.module.js'
 
 @Module({
-  imports: [ConfigModule, PrismaModule, CommonModule, AuthModule, HealthModule, LinksModule],
+  imports: [
+    ConfigModule,
+    PrismaModule,
+    CommonModule,
+    AuthModule,
+    HealthModule,
+    LinksModule,
+    OpenApiModule,
+  ],
 })
 export class AppModule {}

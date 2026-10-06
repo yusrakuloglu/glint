@@ -36,26 +36,33 @@ const savedUrlSchema = z
 
 const titleSchema = z.string().trim().min(1).max(MAX_TITLE_LENGTH)
 const noteSchema = z.string().max(MAX_NOTE_LENGTH)
-const timestampSchema = z.date().transform((date) => date.toISOString())
+// Handlers return Date; clients receive an ISO 8601 string. The pipe keeps the
+// output documented as `string (date-time)` in OpenAPI
+const timestampSchema = z
+  .date()
+  .transform((date) => date.toISOString())
+  .pipe(z.iso.datetime())
 
-export const linkSchema = z.object({
-  id: z.uuid(),
-  /** URL as the user saved it */
-  url: z.string(),
-  /** Normalized URL shared by everyone who saved the same page */
-  canonicalUrl: z.string(),
-  /** User's title, falling back to the page title */
-  title: z.string().nullable(),
-  siteName: z.string().nullable(),
-  summary: z.string().nullable(),
-  /** AI processing status of the page */
-  status: z.enum(ContentStatus),
-  note: z.string().nullable(),
-  readAt: timestampSchema.nullable(),
-  /** When the user saved the link; refreshed when a deleted link is saved again */
-  createdAt: timestampSchema,
-  updatedAt: timestampSchema,
-})
+export const linkSchema = z
+  .object({
+    id: z.uuid(),
+    /** URL as the user saved it */
+    url: z.string(),
+    /** Normalized URL shared by everyone who saved the same page */
+    canonicalUrl: z.string(),
+    /** User's title, falling back to the page title */
+    title: z.string().nullable(),
+    siteName: z.string().nullable(),
+    summary: z.string().nullable(),
+    /** AI processing status of the page */
+    status: z.enum(ContentStatus),
+    note: z.string().nullable(),
+    readAt: timestampSchema.nullable(),
+    /** When the user saved the link; refreshed when a deleted link is saved again */
+    createdAt: timestampSchema,
+    updatedAt: timestampSchema,
+  })
+  .meta({ id: 'Link' })
 
 const linkIdParams = z.object({ id: z.uuid() })
 
@@ -97,7 +104,11 @@ export const listLinks = defineEndpoint({
   summary: 'List saved links, newest first',
   tag: TAG,
   query: pageQuerySchema,
-  response: { status: 200, description: 'A page of saved links', schema: pageSchema(linkSchema) },
+  response: {
+    status: 200,
+    description: 'A page of saved links',
+    schema: pageSchema(linkSchema).meta({ id: 'LinkPage' }),
+  },
 })
 
 export const updateLink = defineEndpoint({
