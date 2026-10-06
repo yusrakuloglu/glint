@@ -5,6 +5,7 @@ import { type Cursor, toPage } from '../common/pagination/cursor.js'
 import { ProblemException } from '../common/problem-details.js'
 import { type Content, Prisma, type SavedLink } from '../generated/prisma/client.js'
 import { PrismaService } from '../prisma/prisma.service.js'
+import { ContentIngestService, type PageInput } from '../processing/content-ingest.service.js'
 
 import { type linkSchema } from './links.contracts.js'
 
@@ -21,6 +22,7 @@ export interface SaveLinkInput {
   url: { original: string; normalized: string }
   title?: string | undefined
   note?: string | undefined
+  page?: PageInput | undefined
 }
 
 /**
@@ -42,7 +44,9 @@ export function toLinkResponse(link: LinkWithContent): LinkResponse {
     canonicalUrl: link.content.url,
     title: link.title ?? link.content.title,
     siteName: link.content.siteName,
+    excerpt: link.content.excerpt,
     summary: link.content.summary,
+    suggestedTags: link.content.suggestedTags,
     status: link.content.status,
     note: link.note,
     readAt: link.readAt,
@@ -53,11 +57,25 @@ export function toLinkResponse(link: LinkWithContent): LinkResponse {
 
 @Injectable()
 export class LinksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ingest: ContentIngestService
+  ) {}
 
   async save(userId: string, input: SaveLinkInput): Promise<LinkResponse> {
     const content = await this.findOrCreateContent(input.url.normalized)
+    if (input.page !== undefined) {
+      // Before the link is read below, so the response shows the new status
+      await this.ingest.submitPage(userId, content, input.page)
+    }
+    return this.saveLink(userId, content, input)
+  }
 
+  private async saveLink(
+    userId: string,
+    content: Content,
+    input: SaveLinkInput
+  ): Promise<LinkResponse> {
     const existing = await this.prisma.savedLink.findUnique({
       where: { userId_contentId: { userId, contentId: content.id } },
       include: { content: true },
@@ -101,7 +119,7 @@ export class LinksService {
     } catch (error) {
       // A concurrent save of the same URL won the race: return its result
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        return this.save(userId, input)
+        return this.saveLink(userId, content, input)
       }
       throw error
     }

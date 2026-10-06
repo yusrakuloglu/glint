@@ -8,6 +8,7 @@ import request from 'supertest'
 import { AppModule } from '../../app.module.js'
 import { JWT_KEY_RESOLVER } from '../../auth/access-token-verifier.js'
 import { ENV } from '../../config/env.js'
+import { configureApp } from '../../configure-app.js'
 import { PrismaService } from '../../prisma/prisma.service.js'
 import { createTestTokenIssuer, type TestTokenIssuer } from '../access-tokens.js'
 import { testEnv } from '../test-env.js'
@@ -44,6 +45,7 @@ export async function createTestApp(): Promise<TestApp> {
     .compile()
 
   const app = moduleRef.createNestApplication<INestApplication<Server>>({ logger: false })
+  configureApp(app)
   await app.init()
 
   return {

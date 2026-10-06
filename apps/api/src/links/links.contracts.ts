@@ -10,6 +10,16 @@ const TAG = 'links'
 const MAX_INPUT_URL_LENGTH = 4096
 const MAX_TITLE_LENGTH = 500
 const MAX_NOTE_LENGTH = 10_000
+/** Serialized DOM of the page; extraction runs in the worker (Phase 3 plan, 1c) */
+const MAX_PAGE_HTML_LENGTH = 5_000_000
+/** BCP 47 language tags fit in 35 characters */
+const MAX_LANG_LENGTH = 35
+
+/**
+ * JSON body limit of POST /links, in bytes. Above MAX_PAGE_HTML_LENGTH for
+ * JSON escaping and the other fields; every other route keeps Nest's 100 KB.
+ */
+export const SAVE_LINK_BODY_LIMIT = '6mb'
 
 const urlMessages: Record<InvalidUrlError['reason'], string> = {
   unparseable: 'Must be a valid URL',
@@ -35,6 +45,12 @@ const savedUrlSchema = z
   })
 
 const titleSchema = z.string().trim().min(1).max(MAX_TITLE_LENGTH)
+const pageInputSchema = z.strictObject({
+  /** `document.documentElement.outerHTML` */
+  html: z.string().min(1).max(MAX_PAGE_HTML_LENGTH),
+  /** `document.documentElement.lang`, if set */
+  lang: z.string().trim().min(1).max(MAX_LANG_LENGTH).optional(),
+})
 const noteSchema = z.string().max(MAX_NOTE_LENGTH)
 // Handlers return Date; clients receive an ISO 8601 string. The pipe keeps the
 // output documented as `string (date-time)` in OpenAPI
@@ -53,8 +69,14 @@ export const linkSchema = z
     /** User's title, falling back to the page title */
     title: z.string().nullable(),
     siteName: z.string().nullable(),
+    excerpt: z.string().nullable(),
     summary: z.string().nullable(),
-    /** AI processing status of the page */
+    /** AI tag suggestions for the page */
+    suggestedTags: z.array(z.string()),
+    /**
+     * Processing status of the page. AWAITING_CONTENT: no page content has
+     * been sent yet (the server does not fetch pages).
+     */
     status: z.enum(ContentStatus),
     note: z.string().nullable(),
     readAt: timestampSchema.nullable(),
@@ -76,6 +98,8 @@ export const createLink = defineEndpoint({
     url: savedUrlSchema,
     title: titleSchema.optional(),
     note: noteSchema.optional(),
+    /** Page content captured by the client; starts processing unless the page is already processed */
+    page: pageInputSchema.optional(),
   }),
   response: {
     status: 201,

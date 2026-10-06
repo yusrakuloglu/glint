@@ -1,5 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
+import { contentExtractQueue } from '../processing/processing.queues.js'
+import { PG_BOSS_SCHEMA } from '../queue/queue.service.js'
 import { createTestApp, type TestApp, type TestUser } from '../testing/integration/test-app.js'
 
 interface LinkBody {
@@ -73,11 +75,13 @@ describe('links API', () => {
         [
           'canonicalUrl',
           'createdAt',
+          'excerpt',
           'id',
           'note',
           'readAt',
           'siteName',
           'status',
+          'suggestedTags',
           'summary',
           'title',
           'updatedAt',
@@ -142,6 +146,131 @@ describe('links API', () => {
 
       expect(response.status).toBe(400)
       expect(await t.prisma.savedLink.count({ where: { userId: bob.id } })).toBe(0)
+    })
+  })
+
+  describe('POST /links with page content', () => {
+    const page = { html: '<html><body><article>Hello</article></body></html>', lang: 'en' }
+
+    /** Extract jobs queued for a content, by the content's normalized URL */
+    async function extractJobs(url: string) {
+      const content = await t.prisma.content.findUniqueOrThrow({ where: { url } })
+      return t.prisma.$queryRawUnsafe<{ id: string }[]>(
+        `SELECT id FROM ${PG_BOSS_SCHEMA}.job WHERE name = $1 AND data->>'contentId' = $2`,
+        contentExtractQueue.name,
+        content.id
+      )
+    }
+
+    const snapshots = (url: string) => t.prisma.pageSnapshot.count({ where: { content: { url } } })
+
+    it('stores the page and queues extraction', async () => {
+      const url = uniqueUrl()
+
+      const response = await save(alice, { url, page })
+
+      expect(response.status).toBe(201)
+      expect(response.body.status).toBe('PENDING')
+      expect(await extractJobs(url)).toHaveLength(1)
+      const snapshot = await t.prisma.pageSnapshot.findFirstOrThrow({ where: { content: { url } } })
+      expect(snapshot).toMatchObject({ userId: alice.id, html: page.html, lang: 'en' })
+    })
+
+    it('queues nothing without page content', async () => {
+      const url = uniqueUrl()
+
+      await save(alice, { url })
+
+      expect(await extractJobs(url)).toHaveLength(0)
+      expect(await snapshots(url)).toBe(0)
+    })
+
+    it('starts one pipeline when users send the same page concurrently', async () => {
+      const url = uniqueUrl()
+
+      const results = await Promise.all([
+        save(alice, { url, page }),
+        save(bob, { url, page }),
+        save(alice, { url, page }),
+      ])
+
+      expect(results.map((r) => r.status)).toEqual([201, 201, 201])
+      expect(await extractJobs(url)).toHaveLength(1)
+      expect(await snapshots(url)).toBe(1)
+    })
+
+    it('reuses processed content without queueing again', async () => {
+      const url = uniqueUrl()
+      await save(alice, { url })
+      await t.prisma.content.update({ where: { url }, data: { status: 'READY', summary: 'Done' } })
+
+      const response = await save(bob, { url, page })
+
+      expect(response.body).toMatchObject({ status: 'READY', summary: 'Done' })
+      expect(await extractJobs(url)).toHaveLength(0)
+      expect(await snapshots(url)).toBe(0)
+    })
+
+    it('retries failed content with a new page', async () => {
+      const url = uniqueUrl()
+      await save(alice, { url })
+      await t.prisma.content.update({
+        where: { url },
+        data: { status: 'FAILED', processingStep: 'SUMMARIZE', failureReason: 'too short' },
+      })
+
+      const response = await save(bob, { url, page })
+
+      expect(response.body.status).toBe('PENDING')
+      expect(await t.prisma.content.findUniqueOrThrow({ where: { url } })).toMatchObject({
+        processingStep: 'EXTRACT',
+        failureReason: null,
+      })
+      expect(await extractJobs(url)).toHaveLength(1)
+    })
+
+    it('accepts a page larger than the default 100 KB body limit', async () => {
+      const url = uniqueUrl()
+      const html = `<html><body>${'a'.repeat(2_000_000)}</body></html>`
+
+      const response = await save(alice, { url, page: { html } })
+
+      expect(response.status).toBe(201)
+    })
+
+    it('rejects page html over 5 million characters', async () => {
+      const response = await save(alice, {
+        url: uniqueUrl(),
+        page: { html: 'a'.repeat(5_000_001) },
+      })
+
+      expect(response.status).toBe(400)
+      expect(parseProblem(response.text).errors?.map((error) => error.path)).toContain(
+        'body.page.html'
+      )
+    })
+
+    it('returns a problem response for a body over the limit', async () => {
+      const response = await save(alice, {
+        url: uniqueUrl(),
+        page: { html: 'a'.repeat(6 * 1024 * 1024) },
+      })
+
+      expect(response.status).toBe(413)
+      expect(parseProblem(response.text).code).toBe('payload_too_large')
+    })
+
+    it('keeps the default limit on other routes', async () => {
+      const { body: link } = await save(alice, { url: uniqueUrl() })
+
+      const response = await t
+        .http()
+        .patch(`/links/${link.id}`)
+        .set('authorization', alice.authorization)
+        .send({ note: 'a'.repeat(200_000) })
+
+      expect(response.status).toBe(413)
+      expect(parseProblem(response.text).code).toBe('payload_too_large')
     })
   })
 
