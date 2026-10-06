@@ -18,6 +18,16 @@ import {
 } from './problem-details.js'
 
 /**
+ * Errors from Express middleware (body-parser) use the http-errors shape;
+ * `expose` marks the message as safe to show to the client.
+ */
+function isExposedClientError(exception: unknown): exception is Error & { status: number } {
+  if (!(exception instanceof Error)) return false
+  const { status, expose } = exception as Error & { status?: unknown; expose?: unknown }
+  return typeof status === 'number' && status >= 400 && status < 500 && expose === true
+}
+
+/**
  * Turns every error into an RFC 9457 problem response.
  * Only 4xx details reach the client; 5xx details stay in the logs.
  */
@@ -76,6 +86,16 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         status,
         code,
         ...(status < 500 && { detail: exception.message }),
+      })
+    }
+
+    if (isExposedClientError(exception)) {
+      // Nest maps only body-parser's SyntaxError itself; size limits
+      // (413) and unsupported charsets (415) arrive here
+      return new ProblemException({
+        status: exception.status,
+        code: codeForStatus(exception.status),
+        detail: exception.message,
       })
     }
 

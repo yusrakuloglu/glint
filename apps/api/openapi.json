@@ -124,6 +124,25 @@
                   "note": {
                     "type": "string",
                     "maxLength": 10000
+                  },
+                  "page": {
+                    "type": "object",
+                    "properties": {
+                      "html": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 5000000
+                      },
+                      "lang": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 35
+                      }
+                    },
+                    "required": [
+                      "html"
+                    ],
+                    "additionalProperties": false
                   }
                 },
                 "required": [
@@ -465,15 +484,28 @@
               "null"
             ]
           },
+          "excerpt": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "summary": {
             "type": [
               "string",
               "null"
             ]
           },
+          "suggestedTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "status": {
             "type": "string",
             "enum": [
+              "AWAITING_CONTENT",
               "PENDING",
               "PROCESSING",
               "READY",
@@ -515,7 +547,9 @@
           "canonicalUrl",
           "title",
           "siteName",
+          "excerpt",
           "summary",
+          "suggestedTags",
           "status",
           "note",
           "readAt",

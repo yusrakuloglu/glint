@@ -8,7 +8,13 @@ const base = { DATABASE_URL, SUPABASE_URL }
 
 describe('parseEnv', () => {
   it('applies defaults', () => {
-    expect(parseEnv(base)).toEqual({ ...base, API_PORT: 3001, WEB_ORIGIN: 'http://localhost:3000' })
+    expect(parseEnv(base)).toEqual({
+      ...base,
+      API_PORT: 3001,
+      WEB_ORIGIN: 'http://localhost:3000',
+      AI_DAILY_LIMIT_PER_USER: 50,
+      AI_MAX_DEFER_DAYS: 7,
+    })
   })
 
   it('coerces the port', () => {
@@ -27,6 +33,8 @@ describe('parseEnv', () => {
     ['non-http Supabase URL', { ...base, SUPABASE_URL: 'ftp://abcdefgh.supabase.co' }],
     ['invalid port', { ...base, API_PORT: 'abc' }],
     ['invalid web origin', { ...base, WEB_ORIGIN: 'localhost:3000' }],
+    ['zero AI limit', { ...base, AI_DAILY_LIMIT_PER_USER: '0' }],
+    ['defer window over 30 days', { ...base, AI_MAX_DEFER_DAYS: '31' }],
   ])('rejects %s', (_, source) => {
     expect(() => parseEnv(source)).toThrow(/Invalid environment variables/)
   })

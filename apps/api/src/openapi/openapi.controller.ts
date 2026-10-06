@@ -9,12 +9,13 @@ import { createOpenApiDocument } from './openapi-document.js'
 const OPENAPI_PATH = '/openapi.json'
 
 // `withFastify` makes Scalar write through the plain node:http response API,
-// which Express responses also support (no @types/express needed)
+// which Express responses also support. Its declared return type is a union
+// of the Fastify and Express handlers; this mode ignores the request.
 const renderDocs = apiReference({
   url: OPENAPI_PATH,
   pageTitle: 'Glint API',
   withFastify: true,
-})
+}) as (request: unknown, response: HttpResponse) => void
 
 @Public()
 @Controller()

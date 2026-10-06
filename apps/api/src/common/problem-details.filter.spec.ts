@@ -158,6 +158,15 @@ describe('ProblemDetailsFilter', () => {
     expect(JSON.parse(response.text)).toMatchObject({ code: 'bad_request' })
   })
 
+  it('returns payload_too_large for a body over the limit', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/test/echo')
+      .send({ value: 'a'.repeat(200_000) })
+
+    expect(response.status).toBe(413)
+    expect(JSON.parse(response.text)).toMatchObject({ code: 'payload_too_large' })
+  })
+
   it('reuses a safe incoming request id', async () => {
     const response = await request(app.getHttpServer())
       .get('/test/problem')

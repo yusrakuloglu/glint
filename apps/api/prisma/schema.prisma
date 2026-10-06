@@ -20,10 +20,27 @@ datasource db {
 //   database rejects links between rows of different users.
 
 enum ContentStatus {
+  /// No page content yet: the server does not scrape (decision 003)
+  AWAITING_CONTENT
+  /// Queued for processing
   PENDING
   PROCESSING
   READY
   FAILED
+}
+
+/// Next pipeline step to run; DONE once embeddings are written
+enum ProcessingStep {
+  EXTRACT
+  SUMMARIZE
+  CHUNK
+  EMBED
+  DONE
+}
+
+enum AiProvider {
+  GEMINI
+  GROQ
 }
 
 enum TagSource {
@@ -41,21 +58,70 @@ enum HighlightColor {
 
 /// Shared per normalized URL: summaries and chunks are produced once for all users.
 model Content {
-  id        String        @id @default(uuid(7)) @db.Uuid
+  id              String         @id @default(uuid(7)) @db.Uuid
   /// Normalized URL, max 2048 chars (CHECK constraint in migration)
-  url       String        @unique
-  title     String?
-  siteName  String?       @map("site_name")
-  summary   String?
-  language  String?
-  status    ContentStatus @default(PENDING)
-  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  url             String         @unique
+  title           String?
+  siteName        String?        @map("site_name")
+  byline          String?
+  excerpt         String?
+  summary         String?
+  /// ISO 639-1 code of the content
+  language        String?
+  /// Plain text extracted from the page
+  text            String?
+  /// Readability output; not sanitized here, sanitized when rendered (Phase 4)
+  articleHtml     String?        @map("article_html")
+  wordCount       Int?           @map("word_count")
+  /// sha256 of `text`; steps write only if it still matches what they read
+  contentHash     String?        @map("content_hash")
+  /// AI tag suggestions, applied to each user's saved link
+  suggestedTags   String[]       @default([]) @map("suggested_tags")
+  /// Which provider wrote the summary, for observability
+  aiProvider      AiProvider?    @map("ai_provider")
+  status          ContentStatus  @default(AWAITING_CONTENT)
+  processingStep  ProcessingStep @default(EXTRACT) @map("processing_step")
+  failureReason   String?        @map("failure_reason")
+  /// Last change of status or processing step; the reconciler finds stuck content by it
+  statusChangedAt DateTime       @default(now()) @map("status_changed_at") @db.Timestamptz(3)
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   savedLinks SavedLink[]
   chunks     Chunk[]
+  snapshots  PageSnapshot[]
 
+  @@index([status, statusChangedAt])
   @@map("contents")
+}
+
+/// Raw page HTML sent by a client, kept only until the extract step has run.
+/// Not put in the job payload: pg-boss keeps payloads in its archive.
+model PageSnapshot {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  contentId String   @map("content_id") @db.Uuid
+  /// Who sent it; their AI quota paid for the processing
+  userId    String   @map("user_id") @db.Uuid
+  /// gzip of the page HTML with script and style elements removed
+  htmlGzip  Bytes    @map("html_gzip")
+  /// Page language as reported by the client (document lang attribute)
+  lang      String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  content Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+
+  @@index([contentId, createdAt])
+  @@map("page_snapshots")
+}
+
+/// AI-backed processing runs per user and UTC day, for the daily quota
+model AiUsage {
+  userId String   @map("user_id") @db.Uuid
+  day    DateTime @db.Date
+  count  Int      @default(0)
+
+  @@id([userId, day])
+  @@map("ai_usage")
 }
 
 /// A user's save of a Content. Soft deleted; saving the same URL again restores it.

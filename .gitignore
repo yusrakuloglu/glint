@@ -3,6 +3,7 @@ node_modules/
 
 # Build outputs
 dist/
+dist-worker/
 .next/
 next-env.d.ts
 .turbo/
