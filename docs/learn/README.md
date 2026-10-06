@@ -39,9 +39,15 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | [testcontainers-ve-integration-testleri](testcontainers-ve-integration-testleri.md) | Gerçek Postgres ile testler, yetki senaryoları          |
 | [openapi-ve-api-client](openapi-ve-api-client.md)                                   | Contract'lardan OpenAPI, orval client, web entegrasyonu |
 
+## Faz 3 – İşleme pipeline'ı
+
+| Doküman                                       | Konu                                                                |
+| --------------------------------------------- | ------------------------------------------------------------------- |
+| [idempotent-pipeline](idempotent-pipeline.md) | Transaction içinde kuyruğa gönderim, outbox kıyası, güvenli kapanış |
+
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination, testcontainers-ve-integration-testleri ve openapi-ve-api-client: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination, testcontainers-ve-integration-testleri, openapi-ve-api-client ve idempotent-pipeline: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.
