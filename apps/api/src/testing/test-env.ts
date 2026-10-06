@@ -6,4 +6,6 @@ export const testEnv: Env = {
   API_PORT: 3001,
   WEB_ORIGIN: 'http://localhost:3000',
   SUPABASE_URL: 'https://test-project.supabase.co',
+  AI_DAILY_LIMIT_PER_USER: 50,
+  AI_MAX_DEFER_DAYS: 7,
 }

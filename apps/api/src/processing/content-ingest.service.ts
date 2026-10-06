@@ -4,6 +4,7 @@ import { type Content, ContentStatus } from '../generated/prisma/client.js'
 import { PrismaService } from '../prisma/prisma.service.js'
 import { QueueService } from '../queue/queue.service.js'
 
+import { AiQuotaService } from './ai-quota.service.js'
 import { contentExtractQueue } from './processing.queues.js'
 
 export interface PageInput {
@@ -18,7 +19,8 @@ const ACCEPTS_PAGE: ContentStatus[] = [ContentStatus.AWAITING_CONTENT, ContentSt
 export class ContentIngestService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly queue: QueueService
+    private readonly queue: QueueService,
+    private readonly quota: AiQuotaService
   ) {}
 
   /**
@@ -30,6 +32,10 @@ export class ContentIngestService {
    * conditional update claims the content, so of two concurrent saves only
    * one stores its page and queues a job.
    *
+   * Processing costs the sender one run of their daily AI quota; content
+   * that is reused costs nothing. Over the limit, the job waits for the
+   * first day with room.
+   *
    * @returns whether this page started processing
    */
   async submitPage(userId: string, content: Content, page: PageInput): Promise<boolean> {
@@ -37,6 +43,7 @@ export class ContentIngestService {
       return false
     }
 
+    const now = new Date()
     return this.prisma.$transaction(async (tx) => {
       const { count } = await tx.content.updateMany({
         where: { id: content.id, status: { in: ACCEPTS_PAGE } },
@@ -51,10 +58,15 @@ export class ContentIngestService {
         return false
       }
 
+      const runDay = await this.quota.reserve(tx, userId, now)
       await tx.pageSnapshot.create({
         data: { contentId: content.id, userId, html: page.html, lang: page.lang ?? null },
       })
-      await this.queue.send(contentExtractQueue, { contentId: content.id }, { tx })
+      await this.queue.send(
+        contentExtractQueue,
+        { contentId: content.id },
+        { tx, ...(runDay > now && { startAfter: runDay }) }
+      )
       return true
     })
   }
