@@ -22,10 +22,10 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 
 - [x] Veri modeli: Content, SavedLink, Chunk, Tag, Collection, Highlight
 - [x] Supabase JWT doğrulama, links CRUD
-- [ ] Cursor pagination, tutarlı hata formatı, OpenAPI
-- [ ] orval ile packages/api-client
+- [x] Cursor pagination, tutarlı hata formatı, OpenAPI
+- [x] orval ile packages/api-client
 - [x] Testcontainers ile integration testleri
-- **Bitti:** Web tipli client ile API'yi çağırabiliyor
+- **Bitti:** Web tipli client ile API'yi çağırabiliyor ✓ (2026-10-06)
 
 ## Faz 3 – İşleme pipeline'ı
 
