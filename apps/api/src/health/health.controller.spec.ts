@@ -6,12 +6,17 @@ import request from 'supertest'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import { AppModule } from '../app.module.js'
+import { ENV } from '../config/env.js'
+import { testEnv } from '../testing/test-env.js'
 
 describe('GET /health', () => {
   let app: INestApplication<Server>
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile()
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
+      .overrideProvider(ENV)
+      .useValue(testEnv)
+      .compile()
     app = moduleRef.createNestApplication()
     await app.init()
   })

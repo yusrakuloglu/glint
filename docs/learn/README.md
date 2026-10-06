@@ -32,10 +32,12 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | ----------------------------------------------------------------------- | --------------------------------------------- |
 | [veri-modeli-ve-kiraci-izolasyonu](veri-modeli-ve-kiraci-izolasyonu.md) | Paylaşılan Content, composite FK, soft delete |
 | [url-normalizasyonu](url-normalizasyonu.md)                             | Kanonik URL, muhafazakâr kurallar             |
+| [supabase-jwt-ve-jwks](supabase-jwt-ve-jwks.md)                         | JWKS ile token doğrulama, global guard        |
+| [problem-details](problem-details.md)                                   | RFC 9457 hata formatı, request id             |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu ve url-normalizasyonu: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks ve problem-details: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.
