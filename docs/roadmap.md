@@ -71,6 +71,7 @@ Her faz, "Bitti" kriteri sağlanmadan kapanmaz. Tamamlanan maddeleri [x] ile iş
 - [ ] Playwright E2E + görsel regresyon
 - [ ] Lighthouse CI, axe, Sentry, PostHog
 - [ ] Oracle VM deploy, Supabase ping, pg_dump yedekleme
+  - Docker `stop_grace_period` worker'ın en uzun job süresine göre ayarlanacak (varsayılan 10 sn; pg-boss graceful stop 30 sn bekliyor, aksi halde SIGKILL job'ı yarıda keser)
 - **Bitti:** Her PR'da testler ve performans bütçesi otomatik çalışıyor
 
 ## Faz 9 – Yayın
