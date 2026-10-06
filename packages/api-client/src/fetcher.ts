@@ -14,11 +14,14 @@ export function configureApiClient(next: ApiClientConfig): void {
   config = next
 }
 
-/** Thrown for every non-2xx response; `problem.code` is the stable error code. */
+/**
+ * Thrown for every failed request; `problem.code` is the stable error code.
+ * Network failures (API unreachable, CORS) have status 0 and no response.
+ */
 export class ApiProblemError extends Error {
   constructor(
     readonly problem: ProblemDetails,
-    readonly response: Response
+    readonly response: Response | null
   ) {
     super(problem.detail ?? problem.title)
     this.name = 'ApiProblemError'
@@ -52,7 +55,25 @@ export async function apiFetch<T>(url: string, init: RequestInit = {}): Promise<
     headers.set('authorization', `Bearer ${token}`)
   }
 
-  const response = await fetch(`${config.baseUrl}${url}`, { ...init, headers })
+  let response: Response
+  try {
+    response = await fetch(`${config.baseUrl}${url}`, { ...init, headers })
+  } catch (error) {
+    // Cancellation is not a failure: TanStack Query relies on the AbortError
+    if (init.signal?.aborted === true) {
+      throw error
+    }
+    throw new ApiProblemError(
+      {
+        type: 'about:blank',
+        title: 'Network error',
+        status: 0,
+        detail: 'The API could not be reached',
+        code: 'service_unavailable',
+      },
+      null
+    )
+  }
   if (!response.ok) {
     throw new ApiProblemError(await toProblem(response), response)
   }

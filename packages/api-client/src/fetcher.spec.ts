@@ -93,6 +93,39 @@ describe('apiFetch', () => {
   })
 })
 
+describe('apiFetch network failures', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', fetchMock)
+    configureApiClient({ baseUrl: 'http://api.test' })
+  })
+
+  afterEach(() => {
+    fetchMock.mockReset()
+    vi.unstubAllGlobals()
+  })
+
+  it('turns an unreachable API into a service_unavailable problem', async () => {
+    fetchMock.mockRejectedValue(new TypeError('Failed to fetch'))
+
+    const error = await apiFetch('/health').catch((e: unknown) => e)
+
+    expect(error).toBeInstanceOf(ApiProblemError)
+    expect(error).toMatchObject({
+      problem: { status: 0, code: 'service_unavailable' },
+      response: null,
+    })
+  })
+
+  it('rethrows aborts unchanged', async () => {
+    const controller = new AbortController()
+    controller.abort()
+    const abortError = new DOMException('Aborted', 'AbortError')
+    fetchMock.mockRejectedValue(abortError)
+
+    await expect(apiFetch('/health', { signal: controller.signal })).rejects.toBe(abortError)
+  })
+})
+
 describe('apiFetch without configuration', () => {
   it('fails fast', async () => {
     vi.resetModules()
