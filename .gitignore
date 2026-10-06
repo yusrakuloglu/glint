@@ -9,6 +9,7 @@ next-env.d.ts
 
 # Generated code
 apps/api/src/generated/
+packages/api-client/src/generated/
 
 # Environment
 .env

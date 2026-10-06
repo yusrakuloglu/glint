@@ -33,23 +33,27 @@ const defaultTitles: Record<ProblemCode, string> = {
   service_unavailable: 'Service unavailable',
 }
 
-export const fieldErrorSchema = z.object({
-  /** Dot path inside the request, e.g. `body.url` or `query.limit` */
-  path: z.string(),
-  message: z.string(),
-})
+export const fieldErrorSchema = z
+  .object({
+    /** Dot path inside the request, e.g. `body.url` or `query.limit` */
+    path: z.string(),
+    message: z.string(),
+  })
+  .meta({ id: 'FieldError' })
 
 /** RFC 9457 Problem Details with Glint's extension members. */
-export const problemDetailsSchema = z.object({
-  type: z.string(),
-  title: z.string(),
-  status: z.number().int(),
-  detail: z.string().optional(),
-  instance: z.string().optional(),
-  code: z.enum(problemCodes),
-  requestId: z.string().optional(),
-  errors: z.array(fieldErrorSchema).optional(),
-})
+export const problemDetailsSchema = z
+  .object({
+    type: z.string(),
+    title: z.string(),
+    status: z.number().int(),
+    detail: z.string().optional(),
+    instance: z.string().optional(),
+    code: z.enum(problemCodes),
+    requestId: z.string().optional(),
+    errors: z.array(fieldErrorSchema).optional(),
+  })
+  .meta({ id: 'ProblemDetails' })
 
 export type FieldError = z.infer<typeof fieldErrorSchema>
 export type ProblemDetails = z.infer<typeof problemDetailsSchema>

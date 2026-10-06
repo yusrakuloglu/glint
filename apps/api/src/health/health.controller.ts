@@ -1,16 +1,14 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller } from '@nestjs/common'
 
-import { Public } from '../auth/public.decorator.js'
+import { type EndpointResult } from '../common/contract/endpoint-contract.js'
+import { Endpoint } from '../common/contract/endpoint.decorator.js'
 
-export interface HealthResponse {
-  status: 'ok'
-}
+import { healthCheck } from './health.contracts.js'
 
-@Public()
-@Controller('health')
+@Controller()
 export class HealthController {
-  @Get()
-  check(): HealthResponse {
+  @Endpoint(healthCheck)
+  check(): EndpointResult<typeof healthCheck> {
     return { status: 'ok' }
   }
 }

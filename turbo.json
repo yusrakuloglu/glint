@@ -3,31 +3,35 @@
   "agentGuidance": false,
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "db:generate"],
+      "dependsOn": ["^build", "db:generate", "^codegen", "codegen"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
-      "dependsOn": ["db:generate"],
+      "dependsOn": ["db:generate", "^codegen", "codegen"],
       "cache": false,
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^build", "db:generate"]
+      "dependsOn": ["^build", "db:generate", "^codegen", "codegen"]
     },
     "typecheck": {
-      "dependsOn": ["^build", "db:generate"]
+      "dependsOn": ["^build", "db:generate", "^codegen", "codegen"]
     },
     "test": {
-      "dependsOn": ["^build", "db:generate"]
+      "dependsOn": ["^build", "db:generate", "^codegen", "codegen"]
     },
     "test:int": {
-      "dependsOn": ["^build", "db:generate"]
+      "dependsOn": ["^build", "db:generate", "^codegen", "codegen"]
     },
     "db:migrate": {
       "cache": false
     },
     "db:generate": {
       "inputs": ["prisma/schema.prisma"],
+      "outputs": ["src/generated/**"]
+    },
+    "codegen": {
+      "inputs": ["orval.config.ts", "$TURBO_ROOT$/apps/api/openapi.json"],
       "outputs": ["src/generated/**"]
     }
   }

@@ -37,10 +37,11 @@ Her doküman aynı altı bölümden oluşur: Ne yaptık, Neden, Nasıl çalış�
 | [zod-contract-katmani](zod-contract-katmani.md)                                     | Endpoint contract'ları, validasyon, response filtreleme |
 | [cursor-pagination](cursor-pagination.md)                                           | Keyset pagination, tie-breaker, index                   |
 | [testcontainers-ve-integration-testleri](testcontainers-ve-integration-testleri.md) | Gerçek Postgres ile testler, yetki senaryoları          |
+| [openapi-ve-api-client](openapi-ve-api-client.md)                                   | Contract'lardan OpenAPI, orval client, web entegrasyonu |
 
 ## Okuma sırası
 
 1. monorepo-ve-pnpm ve typescript-ve-esm: diğer her şey bunların üstüne kurulu.
-2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination ve testcontainers-ve-integration-testleri: backend tarafı.
+2. nestjs-temeli, prisma-ve-pgvector, veri-modeli-ve-kiraci-izolasyonu, url-normalizasyonu, supabase-jwt-ve-jwks, problem-details, zod-contract-katmani, cursor-pagination, testcontainers-ve-integration-testleri ve openapi-ve-api-client: backend tarafı.
 3. ci-pipeline: hepsinin otomatik kontrolü.
 4. design-tokens, contrast-check, radix-ve-ui-mimarisi, storybook-ve-a11y-testleri ve bileşen dokümanları (button, form-ve-geri-bildirim-bilesenleri, overlay-bilesenleri): frontend tarafı.

@@ -29,8 +29,11 @@ Node 24 (`.nvmrc`), pnpm sürümü `packageManager` alanından (corepack). İlk 
 - `pnpm db:migrate`: bekleyen migration'ları uygular (`prisma migrate dev`)
 - `pnpm --filter @glint/api db:migrate --name <ad>`: şema değişikliğinden yeni migration üretir
 - `pnpm db:generate`: Prisma client'ı üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
+- `pnpm --filter @glint/api openapi:generate`: contract'lardan `apps/api/openapi.json`'u yeniden üretir; contract değişince çalıştır ve commit'le (güncel değilse unit test kırılır)
+- `codegen` (turbo): `packages/api-client`'ı orval ile `openapi.json`'dan üretir; build/lint/typecheck/test/dev bunu otomatik çalıştırır
+- API dokümanı: çalışan API'de `/docs` (Scalar) ve `/openapi.json`
 - `pnpm --filter @glint/ui storybook` / `build-storybook`: Storybook (:6006) / statik build (`storybook-static/`)
-- Tek paket: `pnpm --filter @glint/<web|api|worker|ui> <script>`
+- Tek paket: `pnpm --filter @glint/<web|api|worker|ui|api-client> <script>` (üretilmiş kod gerekiyorsa `pnpm turbo <görev> --filter=...`)
 
 ## Kurallar
 
@@ -70,4 +73,4 @@ Commit tipi: `docs(learn): ...`
 Fazlar ve bitti kriterleri: `docs/roadmap.md`. Bir göreve başlamadan önce ilgili fazı oku.
 Bir madde tamamlandığında `docs/roadmap.md`'de işaretle; faz bittiğinde aşağıdaki satırı güncelle.
 
-Aktif faz: Faz 2 – Backend temeli
+Aktif faz: Faz 3 – İşleme pipeline'ı

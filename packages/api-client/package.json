@@ -1,0 +1,32 @@
+{
+  "name": "@glint/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/fetcher.ts",
+    "./links": "./src/generated/endpoints/links/links.ts",
+    "./health": "./src/generated/endpoints/health/health.ts",
+    "./models": "./src/generated/models/index.ts"
+  },
+  "scripts": {
+    "codegen": "orval",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "@tanstack/react-query": "^5.104.1",
+    "react": "^19.3.0"
+  },
+  "devDependencies": {
+    "@glint/config": "workspace:*",
+    "@tanstack/react-query": "^5.104.1",
+    "@types/react": "^19.3.0",
+    "eslint": "^9.39.5",
+    "orval": "^8.40.0",
+    "react": "^19.3.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.3"
+  }
+}
