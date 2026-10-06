@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
+import { decompressSnapshotHtml } from '../processing/page-snapshot.js'
 import { contentExtractQueue } from '../processing/processing.queues.js'
 import { PG_BOSS_SCHEMA } from '../queue/queue.service.js'
 import { createTestApp, type TestApp, type TestUser } from '../testing/integration/test-app.js'
@@ -173,7 +174,24 @@ describe('links API', () => {
       expect(response.body.status).toBe('PENDING')
       expect(await extractJobs(url)).toHaveLength(1)
       const snapshot = await t.prisma.pageSnapshot.findFirstOrThrow({ where: { content: { url } } })
-      expect(snapshot).toMatchObject({ userId: alice.id, html: page.html, lang: 'en' })
+      expect(snapshot).toMatchObject({ userId: alice.id, lang: 'en' })
+      await expect(decompressSnapshotHtml(snapshot.htmlGzip)).resolves.toBe(page.html)
+    })
+
+    it('stores the snapshot gzipped, without scripts and styles', async () => {
+      const url = uniqueUrl()
+      const article = `<article>${'<p>Paragraph of the article.</p>'.repeat(500)}</article>`
+      const html =
+        `<html><head><style>${'.a { color: red }'.repeat(500)}</style></head>` +
+        `<body>${article}<script>${'track();'.repeat(500)}</script></body></html>`
+
+      await save(alice, { url, page: { html } })
+
+      const snapshot = await t.prisma.pageSnapshot.findFirstOrThrow({ where: { content: { url } } })
+      await expect(decompressSnapshotHtml(snapshot.htmlGzip)).resolves.toBe(
+        `<html><head></head><body>${article}</body></html>`
+      )
+      expect(snapshot.htmlGzip.byteLength).toBeLessThan(article.length / 10)
     })
 
     it('queues nothing without page content', async () => {

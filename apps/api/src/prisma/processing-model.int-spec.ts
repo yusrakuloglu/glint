@@ -38,7 +38,7 @@ describe('processing data model', () => {
   it('deletes page snapshots with their content', async () => {
     const content = await createContent()
     await prisma.pageSnapshot.create({
-      data: { contentId: content.id, userId: randomUUID(), html: '<html></html>' },
+      data: { contentId: content.id, userId: randomUUID(), htmlGzip: new Uint8Array([1]) },
     })
 
     await prisma.content.delete({ where: { id: content.id } })

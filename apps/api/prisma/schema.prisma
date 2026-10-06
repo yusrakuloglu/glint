@@ -102,7 +102,8 @@ model PageSnapshot {
   contentId String   @map("content_id") @db.Uuid
   /// Who sent it; their AI quota paid for the processing
   userId    String   @map("user_id") @db.Uuid
-  html      String
+  /// gzip of the page HTML with script and style elements removed
+  htmlGzip  Bytes    @map("html_gzip")
   /// Page language as reported by the client (document lang attribute)
   lang      String?
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)

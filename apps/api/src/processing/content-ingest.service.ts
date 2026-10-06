@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service.js'
 import { QueueService } from '../queue/queue.service.js'
 
 import { AiQuotaService } from './ai-quota.service.js'
+import { compressSnapshotHtml, stripScriptsAndStyles } from './page-snapshot.js'
 import { contentExtractQueue } from './processing.queues.js'
 
 export interface PageInput {
@@ -36,6 +37,9 @@ export class ContentIngestService {
    * that is reused costs nothing. Over the limit, the job waits for the
    * first day with room.
    *
+   * The snapshot is stored without script and style elements and gzipped:
+   * deferred pages keep their snapshot for days (decision 028).
+   *
    * @returns whether this page started processing
    */
   async submitPage(userId: string, content: Content, page: PageInput): Promise<boolean> {
@@ -43,6 +47,8 @@ export class ContentIngestService {
       return false
     }
 
+    // CPU work stays outside the transaction, which holds a connection
+    const htmlGzip = await compressSnapshotHtml(stripScriptsAndStyles(page.html))
     const now = new Date()
     return this.prisma.$transaction(async (tx) => {
       const { count } = await tx.content.updateMany({
@@ -60,7 +66,7 @@ export class ContentIngestService {
 
       const runDay = await this.quota.reserve(tx, userId, now)
       await tx.pageSnapshot.create({
-        data: { contentId: content.id, userId, html: page.html, lang: page.lang ?? null },
+        data: { contentId: content.id, userId, htmlGzip, lang: page.lang ?? null },
       })
       await this.queue.send(
         contentExtractQueue,
