@@ -69,9 +69,9 @@ worker:
 - **Her adım idempotent:**
   - Önce Content'in `processingStep` ve `contentHash` değerlerine bakar. İş zaten yapılmışsa hiçbir şey yazmadan bir sonraki adımı gönderir.
   - Yazma koşulludur: `UPDATE ... WHERE id = $1 AND processing_step = 'summarize' AND content_hash = $2`. Aynı anda çalışan iki kopyadan yalnızca biri yazar.
-- **Adımlar arası atomiklik:** "Yaz ve sonraki job'ı gönder" iki ayrı sistem; arada çökme olabilir.
-  - pg-boss `send`'in `db` seçeneğiyle aynı transaction'da gönderilmesi değerlendirilecek. Prisma transaction'ı ham bir pg client vermediği için büyük ihtimalle mümkün olmayacak.
-  - O durumda çözüm: idempotent adımlar + reconciler cron'u. Takılı kalan Content yeniden kuyruğa girer ve adım "zaten yapılmış" diyerek ilerler.
+- **Adımlar arası atomiklik:** "Yaz ve sonraki job'ı gönder" aynı transaction'da yapılır.
+  - Uygulamada doğrulandı: pg-boss 12'nin `fromPrisma(tx)` adapter'ı ile `send`, Prisma interactive transaction'ına katılır (`QueueService.send(..., { tx })`, decisions 026). Transaction geri alınırsa job da oluşmaz.
+  - Reconciler yine kalır: job'ın kendisi retry limitini aşıp `failed` olabilir ya da worker uzun süre kapalı kalabilir. Adımlar idempotent olduğu için yeniden kuyruğa koymak güvenli.
 - **Kalıcı ve geçici hata ayrımı:**
   - Kalıcı hatalar retry edilmez; Content `FAILED` olur ve `failureReason` yazılır. Örnekler: içerik çok kısa, Readability makale bulamadı, iki sağlayıcı da şemaya uymadı.
   - Geçici hatalar (429, 5xx, timeout) pg-boss retry'ına bırakılır: `retryLimit: 5`, `retryDelay: 30`, `retryBackoff: true`.

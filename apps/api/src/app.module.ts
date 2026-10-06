@@ -7,11 +7,13 @@ import { HealthModule } from './health/health.module.js'
 import { LinksModule } from './links/links.module.js'
 import { OpenApiModule } from './openapi/openapi.module.js'
 import { PrismaModule } from './prisma/prisma.module.js'
+import { QueueModule } from './queue/queue.module.js'
 
 @Module({
   imports: [
     ConfigModule,
     PrismaModule,
+    QueueModule.forRoot({ role: 'api' }),
     CommonModule,
     AuthModule,
     HealthModule,

@@ -2,7 +2,10 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 
 import { PostgreSqlContainer } from '@testcontainers/postgresql'
+import { PgBoss } from 'pg-boss'
 import { type TestProject } from 'vitest/node'
+
+import { PG_BOSS_SCHEMA } from '../../queue/queue.service.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -18,7 +21,7 @@ declare module 'vitest' {
 }
 
 /**
- * Starts Postgres once per run and migrates a template database. Each test
+ * Starts Postgres once per run and migrates a template database (Prisma and pg-boss). Each test
  * file clones the template (CREATE DATABASE ... TEMPLATE), which is much
  * faster than migrating and keeps files isolated while running in parallel.
  */
@@ -34,6 +37,16 @@ export default async function setup(project: TestProject) {
     // prisma.config.ts loads the repo .env only for variables not set here
     env: { ...process.env, DATABASE_URL: container.getConnectionUri() },
   })
+
+  // Installs pg-boss's schema once; clones then start without migrating
+  const boss = new PgBoss({
+    connectionString: container.getConnectionUri(),
+    schema: PG_BOSS_SCHEMA,
+    supervise: false,
+    schedule: false,
+  })
+  await boss.start()
+  await boss.stop({ graceful: false })
 
   const adminUrl = new URL(container.getConnectionUri())
   adminUrl.pathname = '/postgres'
