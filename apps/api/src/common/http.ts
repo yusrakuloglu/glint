@@ -10,6 +10,11 @@ export interface HttpRequest extends IncomingMessage {
   originalUrl?: string
   requestId?: string
   user?: AuthUser
+  /** Request parts validated against the endpoint contract */
+  input?: Partial<Record<'params' | 'query' | 'body', unknown>>
+  params?: Record<string, string>
+  query?: unknown
+  body?: unknown
 }
 
 export type HttpResponse = ServerResponse

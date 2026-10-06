@@ -6,6 +6,8 @@ import {
   Logger,
 } from '@nestjs/common'
 
+import { Prisma } from '../generated/prisma/client.js'
+
 import { type HttpRequest, type HttpResponse } from './http.js'
 import {
   codeForStatus,
@@ -75,6 +77,17 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         code,
         ...(status < 500 && { detail: exception.message }),
       })
+    }
+
+    if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+      // Services check ownership and existence themselves; these are races
+      // (two concurrent saves, a row deleted between read and write)
+      if (exception.code === 'P2002') {
+        return new ProblemException({ status: 409, code: 'conflict' })
+      }
+      if (exception.code === 'P2025') {
+        return new ProblemException({ status: 404, code: 'not_found' })
+      }
     }
 
     // Anything else is a bug, including ZodErrors from internal parsing:

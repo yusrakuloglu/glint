@@ -9,7 +9,8 @@
     "start": "node dist/main.js",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --project unit",
+    "test:int": "vitest run --project integration",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy"
@@ -31,6 +32,7 @@
     "@nestjs/cli": "^12.0.8",
     "@nestjs/testing": "^12.1.2",
     "@swc/core": "^1.16.13",
+    "@testcontainers/postgresql": "^12.2.0",
     "@types/node": "^24.19.0",
     "@types/pg": "^8.23.1",
     "@types/supertest": "^7.2.1",
